@@ -1,17 +1,17 @@
-# دليل النشر — Publishing guide
+﻿# دليل النشر — Publishing guide
 
 كل شيء جاهز محلياً (git repo + CI + Pages workflow). الخطوات التالية تحتاج حساباتك أنت.
 
 ## 1) GitHub (مرة واحدة)
 
 1. أنشئ مستودعاً جديداً على github.com باسم `multi-calendar-datepicker` (Public، بدون README — عندنا واحد)
-2. استبدل `YOUR_GITHUB_USERNAME` باسم حسابك في:
+2. استبدل `abutlb` باسم حسابك في:
    - `package.json` (حقول repository / homepage / bugs)
    - `README.md` (شارة CI في الأعلى)
 3. ثم من مجلد المشروع:
 
 ```powershell
-git remote add origin https://github.com/YOUR_GITHUB_USERNAME/multi-calendar-datepicker.git
+git remote add origin https://github.com/abutlb/multi-calendar-datepicker.git
 git branch -M main
 git push -u origin main
 ```
@@ -19,7 +19,7 @@ git push -u origin main
 4. **تفعيل الديمو الحي**: من إعدادات المستودع على GitHub:
    `Settings ← Pages ← Source: GitHub Actions`
    — سيعمل workflow النشر تلقائياً مع أول push، والديمو سيكون على:
-   `https://YOUR_GITHUB_USERNAME.github.io/multi-calendar-datepicker/`
+   `https://abutlb.github.io/multi-calendar-datepicker/`
 
 5. شارة CI ستتحول خضراء تلقائياً بعد أول تشغيل ناجح للاختبارات (58 اختباراً).
 

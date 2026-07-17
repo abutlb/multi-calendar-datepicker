@@ -30,10 +30,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YOUR_GITHUB_USERNAME/multi-calendar-datepicker.git"
+    "url": "git+https://github.com/abutlb/multi-calendar-datepicker.git"
   },
-  "homepage": "https://YOUR_GITHUB_USERNAME.github.io/multi-calendar-datepicker/",
-  "bugs": "https://github.com/YOUR_GITHUB_USERNAME/multi-calendar-datepicker/issues",
+  "homepage": "https://abutlb.github.io/multi-calendar-datepicker/",
+  "bugs": "https://github.com/abutlb/multi-calendar-datepicker/issues",
   "sideEffects": [
     "**/*.css",
     "./src/index.js",

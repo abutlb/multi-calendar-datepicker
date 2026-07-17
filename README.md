@@ -1,6 +1,6 @@
 # Multi Calendar Datepicker
 
-[![CI](https://github.com/YOUR_GITHUB_USERNAME/multi-calendar-datepicker/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_GITHUB_USERNAME/multi-calendar-datepicker/actions/workflows/ci.yml)
+[![CI](https://github.com/abutlb/multi-calendar-datepicker/actions/workflows/ci.yml/badge.svg)](https://github.com/abutlb/multi-calendar-datepicker/actions/workflows/ci.yml)
 ![gzip size](https://img.shields.io/badge/gzip-~12%20kB-brightgreen)
 ![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![types](https://img.shields.io/badge/types-included-blue)

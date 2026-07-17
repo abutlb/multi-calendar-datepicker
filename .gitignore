@@ -4,3 +4,6 @@ node_modules/
 Thumbs.db
 .vscode/
 .idea/
+
+# Internal working notes — not part of the published project
+multi-calendar-datepicker-spec.txt
