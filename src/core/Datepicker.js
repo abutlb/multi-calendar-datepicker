@@ -636,7 +636,13 @@ export class Datepicker {
       detail.gregorianDate = this._calendar.toGregorian(this._selected);
     }
     this._dispatch('mcd:change', detail);
+    // Re-broadcast a native 'change' for frameworks/forms listening on the
+    // input itself. Guarded because allowInput's own commit handler also
+    // listens for 'change' on this input — without the guard this would
+    // re-enter itself and recurse until the call stack overflows.
+    this._suppressChangeCommit = true;
     this._input.dispatchEvent(new Event('change', { bubbles: true }));
+    this._suppressChangeCommit = false;
   }
 
   _updateResultPreview(text) {
@@ -664,6 +670,7 @@ export class Datepicker {
 
     if (this._opts.allowInput && this._opts.mode !== 'range') {
       const commitFn = () => {
+        if (this._suppressChangeCommit) return;
         const raw = this._input.value.trim();
         if (!raw) return;
         const parsed = parseDate(raw, this._opts.displayFormat);

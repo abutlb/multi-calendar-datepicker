@@ -1,6 +1,6 @@
-var kt = Object.defineProperty;
-var Tt = (n, t, e) => t in n ? kt(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
-var p = (n, t, e) => Tt(n, typeof t != "symbol" ? t + "" : t, e);
+var Ct = Object.defineProperty;
+var kt = (n, t, e) => t in n ? Ct(n, t, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[t] = e;
+var p = (n, t, e) => kt(n, typeof t != "symbol" ? t + "" : t, e);
 class N {
   constructor() {
     /** Unique string id, e.g. 'gregorian' */
@@ -45,7 +45,7 @@ class N {
     throw new Error("not implemented");
   }
 }
-const et = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"], rt = ["كانون الثاني", "شباط", "آذار", "نيسان", "أيار", "حزيران", "تموز", "آب", "أيلول", "تشرين الأول", "تشرين الثاني", "كانون الأول"], Ct = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], Yt = ["أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"], Gt = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const et = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"], rt = ["كانون الثاني", "شباط", "آذار", "نيسان", "أيار", "حزيران", "تموز", "آب", "أيلول", "تشرين الأول", "تشرين الثاني", "كانون الأول"], Tt = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"], Yt = ["أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت"], Gt = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 class ht extends N {
   /** @param monthVariant 'default' (يناير) | 'levant' (كانون الثاني) | 'both' (كانون الثاني / يناير) */
   constructor(e = "default") {
@@ -67,7 +67,7 @@ class ht extends N {
     return e % 4 === 0 && e % 100 !== 0 || e % 400 === 0;
   }
   getMonths(e) {
-    return e === "ar" ? this.monthVariant === "levant" ? rt : this.monthVariant === "both" ? rt.map((r, a) => `${r} / ${et[a]}`) : et : Ct;
+    return e === "ar" ? this.monthVariant === "levant" ? rt : this.monthVariant === "both" ? rt.map((r, a) => `${r} / ${et[a]}`) : et : Tt;
   }
   getWeekdays(e, r = 0) {
     const a = e === "ar" ? Yt : Gt, s = [];
@@ -639,7 +639,7 @@ class de extends N {
   }
 }
 const tt = /* @__PURE__ */ new Map();
-function k(n) {
+function C(n) {
   tt.set(n.id, n);
 }
 function bt(n) {
@@ -650,13 +650,13 @@ function bt(n) {
 function le() {
   return [...tt.values()];
 }
-k(new ht());
-k(new z("tabular"));
-k(new re());
-k(new de());
+C(new ht());
+C(new z("tabular"));
+C(new re());
+C(new de());
 const vt = new z("ummalqura");
 vt.id = "ummalqura";
-k(vt);
+C(vt);
 const wt = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩"], At = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
 function ue(n) {
   return String(n).replace(/\d/g, (t) => wt[t]);
@@ -1139,10 +1139,10 @@ class ct {
       secCal: this._secondary,
       gStart: this._rangeStart ? t.toGregorian(this._rangeStart) : null,
       gEnd: this._rangeEnd ? t.toGregorian(this._rangeEnd) : null
-    }, i = t.toGregorian({ year: e, month: r, day: 1 }), c = new Date(i.year, i.month - 1, i.day).getDay(), u = this._opts.weekStart, d = (c - u + 7) % 7, f = this._monthCount(t), T = r === 1 ? f : r - 1, C = r === 1 ? e - 1 : e, I = t.getMonthLength(C, T);
+    }, i = t.toGregorian({ year: e, month: r, day: 1 }), c = new Date(i.year, i.month - 1, i.day).getDay(), u = this._opts.weekStart, d = (c - u + 7) % 7, f = this._monthCount(t), k = r === 1 ? f : r - 1, T = r === 1 ? e - 1 : e, I = t.getMonthLength(T, k);
     for (let l = 0; l < d; l++) {
       const V = I - d + 1 + l;
-      this._grid.appendChild(this._makeDay(C, T, V, !0, s));
+      this._grid.appendChild(this._makeDay(T, k, V, !0, s));
     }
     for (let l = 1; l <= a; l++)
       this._grid.appendChild(this._makeDay(e, r, l, !1, s));
@@ -1151,9 +1151,9 @@ class ct {
       this._grid.appendChild(this._makeDay(L, O, l, !0, s));
   }
   _makeDay(t, e, r, a, s) {
-    const i = { year: t, month: e, day: r }, o = this._calendar.toGregorian(i), c = me(o, this._opts), u = W(i, s.today), d = this._opts.mode === "range", f = !d && this._selected && W(i, this._selected), T = d && s.gStart && b(o, s.gStart) === 0, C = d && s.gEnd && b(o, s.gEnd) === 0, I = d && s.gStart && s.gEnd && b(o, s.gStart) > 0 && b(o, s.gEnd) < 0;
+    const i = { year: t, month: e, day: r }, o = this._calendar.toGregorian(i), c = me(o, this._opts), u = W(i, s.today), d = this._opts.mode === "range", f = !d && this._selected && W(i, this._selected), k = d && s.gStart && b(o, s.gStart) === 0, T = d && s.gEnd && b(o, s.gEnd) === 0, I = d && s.gStart && s.gEnd && b(o, s.gStart) > 0 && b(o, s.gEnd) < 0;
     let g = "mcd-day";
-    a && (g += " mcd-day--outside"), u && (g += " mcd-day--today"), f && (g += " mcd-day--selected"), T && (g += " mcd-day--selected mcd-day--range-start"), C && (g += " mcd-day--selected mcd-day--range-end"), I && (g += " mcd-day--in-range"), c && (g += " mcd-day--disabled");
+    a && (g += " mcd-day--outside"), u && (g += " mcd-day--today"), f && (g += " mcd-day--selected"), k && (g += " mcd-day--selected mcd-day--range-start"), T && (g += " mcd-day--selected mcd-day--range-end"), I && (g += " mcd-day--in-range"), c && (g += " mcd-day--disabled");
     const { weekendDays: Y } = this._opts;
     if (Y && Y.length) {
       const _ = new Date(o.year, o.month - 1, o.day).getDay();
@@ -1165,7 +1165,7 @@ class ct {
       class: g,
       role: "gridcell",
       tabindex: O && !c ? "0" : "-1",
-      "aria-selected": f || T || C ? "true" : "false",
+      "aria-selected": f || k || T ? "true" : "false",
       "aria-disabled": c ? "true" : "false",
       "data-year": String(t),
       "data-month": String(e),
@@ -1235,7 +1235,7 @@ class ct {
       displayValue: this.getDisplayValue(),
       resultText: M.applyTemplate(this._opts.resultTemplate, this._templateData())
     };
-    this._opts.mode === "range" ? (t.start = { ...this._rangeStart }, t.end = { ...this._rangeEnd }, t.gregorianStart = this._calendar.toGregorian(this._rangeStart), t.gregorianEnd = this._calendar.toGregorian(this._rangeEnd)) : (t.displayDate = { ...this._selected }, t.gregorianDate = this._calendar.toGregorian(this._selected)), this._dispatch("mcd:change", t), this._input.dispatchEvent(new Event("change", { bubbles: !0 }));
+    this._opts.mode === "range" ? (t.start = { ...this._rangeStart }, t.end = { ...this._rangeEnd }, t.gregorianStart = this._calendar.toGregorian(this._rangeStart), t.gregorianEnd = this._calendar.toGregorian(this._rangeEnd)) : (t.displayDate = { ...this._selected }, t.gregorianDate = this._calendar.toGregorian(this._selected)), this._dispatch("mcd:change", t), this._suppressChangeCommit = !0, this._input.dispatchEvent(new Event("change", { bubbles: !0 })), this._suppressChangeCommit = !1;
   }
   _updateResultPreview(t) {
     this._resultPreview && (this._resultPreview.textContent = t, this._resultPreview.style.display = t ? "" : "none");
@@ -1250,6 +1250,7 @@ class ct {
       this._input.removeEventListener("focus", t), this._input.removeEventListener("click", t);
     }), this._opts.allowInput && this._opts.mode !== "range") {
       const r = () => {
+        if (this._suppressChangeCommit) return;
         const a = this._input.value.trim();
         if (!a) return;
         const s = St(a, this._opts.displayFormat);
@@ -1524,15 +1525,15 @@ const De = {
   name: "Amber",
   description: "Warm gold accent on light background",
   vars: D("#d97706", "#ffffff", "#fffbeb", "#d97706")
-}, ke = {
+}, Ce = {
   name: "Violet",
   description: "Purple accent on light background",
   vars: D("#7c3aed", "#ffffff", "#f5f3ff", "#7c3aed")
-}, Te = {
+}, ke = {
   name: "Teal",
   description: "Teal accent on light background",
   vars: D("#0d9488", "#ffffff", "#f0fdfa", "#0d9488")
-}, Ce = {
+}, Te = {
   light: De,
   dark: be,
   midnight: ve,
@@ -1541,10 +1542,10 @@ const De = {
   rose: Me,
   emerald: Se,
   amber: Ee,
-  violet: ke,
-  teal: Te
+  violet: Ce,
+  teal: ke
 };
-Object.entries(Ce).forEach(([n, t]) => S.register(n, t));
+Object.entries(Te).forEach(([n, t]) => S.register(n, t));
 const G = {
   /**
    * Initialise one or more datepickers.
@@ -1573,7 +1574,7 @@ const G = {
   },
   // ── Sub-modules ────────────────────────────────────────────────────────
   Datepicker: ct,
-  registerCalendar: k,
+  registerCalendar: C,
   getCalendar: bt,
   getRegisteredCalendars: le,
   formatDate: R,
@@ -1596,5 +1597,5 @@ export {
   bt as getCalendar,
   Nt as isOfficialUmmalquraYear,
   St as parseDate,
-  k as registerCalendar
+  C as registerCalendar
 };
