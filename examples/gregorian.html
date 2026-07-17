@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Gregorian Calendar — Multi Calendar Datepicker</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 32px 16px;
+      max-width: 640px;
+      margin: auto;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    h1 { font-size: 1.4rem; margin: 0 0 4px; }
+    .subtitle { color: #64748b; font-size: .9rem; margin: 0 0 28px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin: 0 0 16px;
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label  { font-size: .85rem; font-weight: 600; color: #374151; }
+    label span { font-weight: 400; color: #9ca3af; }
+    input[type="text"] {
+      font: inherit;
+      border: 1.5px solid #d1d5db;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { outline: none; border-color: #2563eb; }
+    .result {
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      font-size: .88rem;
+      color: #1d4ed8;
+      min-height: 44px;
+    }
+    .result.empty { background: #f9fafb; border-color: #e5e7eb; color: #94a3b8; }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-size: .8rem;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .kw  { color: #7dd3fc; }
+    .str { color: #86efac; }
+    .cm  { color: #64748b; }
+    .key { color: #c4b5fd; }
+    .val { color: #fbbf24; }
+
+    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+    .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+    .badge-green  { background: #dcfce7; color: #15803d; }
+    .badge-purple { background: #ede9fe; color: #6d28d9; }
+
+    .options-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+    .options-list li {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 8px;
+      padding: 8px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: .8rem;
+    }
+    .opt-key { font-family: monospace; color: #6366f1; font-weight: 700; align-self: center; }
+    .opt-val { color: #64748b; }
+  </style>
+</head>
+<body>
+  <h1>Gregorian Calendar / التقويم الميلادي</h1>
+  <p class="subtitle">
+    Standard month/year picker with English locale — مثال بسيط بالميلادي والإنجليزية
+  </p>
+
+  <!-- Live demo -->
+  <div class="card">
+    <p class="card-title">Live Demo</p>
+    <div class="field">
+      <label for="gdate">Select Date <span>/ اختر التاريخ</span></label>
+      <input type="text" id="gdate" placeholder="Click to open the calendar…" autocomplete="off" readonly>
+      <input type="hidden" id="gdate_val" name="date">
+    </div>
+    <div id="gres" class="result empty">No date selected yet.</div>
+
+    <div class="badges">
+      <span class="badge badge-blue">calendar: 'gregorian'</span>
+      <span class="badge badge-green">locale: 'en'</span>
+      <span class="badge badge-purple">weekStart: 0 (Sunday)</span>
+    </div>
+  </div>
+
+  <!-- Code -->
+  <div class="card">
+    <p class="card-title">Code</p>
+<pre>MultiCalendarDatepicker.init(<span class="str">'#gdate'</span>, {
+  <span class="key">calendar</span>:        <span class="str">'gregorian'</span>, <span class="cm">// 'gregorian' | 'hijri' | 'jalali'</span>
+  <span class="key">locale</span>:          <span class="str">'en'</span>,        <span class="cm">// 'en' | 'ar'</span>
+  <span class="key">dir</span>:             <span class="str">'ltr'</span>,       <span class="cm">// 'ltr' | 'rtl'</span>
+  <span class="key">weekStart</span>:       <span class="val">0</span>,           <span class="cm">// 0=Sun, 1=Mon, 6=Sat</span>
+  <span class="key">outputTarget</span>:    <span class="str">'#gdate_val'</span>,<span class="cm">// hidden input → DB value</span>
+  <span class="key">resultTarget</span>:    <span class="str">'#gres'</span>,     <span class="cm">// element to show result text</span>
+  <span class="key">resultTemplate</span>: <span class="str">'Selected: {{gregorian}}'</span>,
+});</pre>
+  </div>
+
+  <!-- Options explained -->
+  <div class="card">
+    <p class="card-title">Available Template Variables — المتغيرات المتاحة</p>
+    <ul class="options-list">
+      <li>
+        <span class="opt-key">{{gregorian}}</span>
+        <span class="opt-val">ISO date sent to the database — e.g. <code>2026-06-15</code></span>
+      </li>
+      <li>
+        <span class="opt-key">{{display}}</span>
+        <span class="opt-val">Human-readable date in the chosen calendar system</span>
+      </li>
+      <li>
+        <span class="opt-key">{{year}}</span>
+        <span class="opt-val">Year component of the selected date (in display calendar)</span>
+      </li>
+      <li>
+        <span class="opt-key">{{month}}</span>
+        <span class="opt-val">Month number</span>
+      </li>
+      <li>
+        <span class="opt-key">{{day}}</span>
+        <span class="opt-val">Day number</span>
+      </li>
+      <li>
+        <span class="opt-key">{{monthName}}</span>
+        <span class="opt-val">Full month name in the active locale (e.g. "June" / "يونيو")</span>
+      </li>
+    </ul>
+  </div>
+
+  <script src="../dist/multi-calendar-datepicker.js"></script>
+  <script>
+    MultiCalendarDatepicker.init('#gdate', {
+      calendar:        'gregorian',
+      locale:          'en',
+      dir:             'ltr',
+      weekStart:       0,
+      outputTarget:    '#gdate_val',
+      resultTarget:    '#gres',
+      resultTemplate:  'Selected: {{gregorian}} ({{monthName}} {{day}}, {{year}})',
+    });
+
+    document.getElementById('gdate').addEventListener('mcd:change', function() {
+      document.getElementById('gres').classList.remove('empty');
+    });
+  </script>
+</body>
+</html>

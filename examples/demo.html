@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multi Calendar Datepicker Demo</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0; padding: 32px;
+      background: #f3f4f6; color: #111827;
+      transition: background .2s, color .2s;
+    }
+    .demo-card {
+      max-width: 760px; margin: auto;
+      background: #fff; border: 1px solid #e5e7eb;
+      border-radius: 18px; padding: 28px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.08);
+    }
+    h1 { margin-top: 0; font-size: 1.5rem; }
+    h2 { font-size: 1.1rem; margin: 20px 0 8px; }
+    .demo-grid {
+      display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+    }
+    @media (max-width: 540px) { .demo-grid { grid-template-columns: 1fr; } }
+    .demo-field { display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: .85rem; font-weight: 600; color: #374151; }
+    input, select, textarea {
+      font: inherit; border: 1px solid #d1d5db;
+      border-radius: 10px; padding: 10px 12px;
+      background: #fff; color: #111827; width: 100%;
+    }
+    input:focus, select:focus { outline: 2px solid #2563eb; outline-offset: 1px; }
+    .demo-check { flex-direction: row; align-items: center; gap: 8px; }
+    .demo-check input { width: auto; }
+    hr { border: none; border-top: 1px solid #e5e7eb; margin: 20px 0; }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    button {
+      font: inherit; cursor: pointer;
+      background: #2563eb; color: white;
+      border: none; border-radius: 10px;
+      padding: 10px 18px; font-size: .85rem;
+    }
+    button.secondary {
+      background: #f3f4f6; color: #111827;
+      border: 1px solid #d1d5db;
+    }
+    button:hover { opacity: .88; }
+    .demo-result {
+      margin-top: 14px; padding: 14px 16px;
+      background: #eff6ff; border: 1px solid #bfdbfe;
+      border-radius: 12px; font-size: .9rem; min-height: 40px;
+    }
+    .result-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;
+    }
+    @media (max-width: 480px) { .result-grid { grid-template-columns: 1fr; } }
+    .result-box {
+      padding: 10px 12px; border-radius: 10px;
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      font-size: .82rem;
+    }
+    .result-box strong { display: block; color: #6b7280; margin-bottom: 3px; font-size: .75rem; }
+    .result-box span { color: #111827; font-weight: 600; word-break: break-all; }
+    pre {
+      white-space: pre-wrap; word-break: break-all;
+      background: #111827; color: #f9fafb;
+      padding: 16px; border-radius: 12px;
+      overflow: auto; font-size: .78rem; margin: 0;
+    }
+    /* Dark mode */
+    body.demo-dark { background: #030712; color: #f9fafb; }
+    body.demo-dark .demo-card { background: #111827; border-color: #374151; }
+    body.demo-dark label { color: #d1d5db; }
+    body.demo-dark input, body.demo-dark select, body.demo-dark textarea {
+      background: #1f2937; color: #f9fafb; border-color: #374151;
+    }
+    body.demo-dark button.secondary { background: #1f2937; color: #f9fafb; border-color: #374151; }
+    body.demo-dark .demo-result { background: #1e3a5f; border-color: #3b82f6; }
+    body.demo-dark .result-box { background: #1f2937; border-color: #374151; }
+    body.demo-dark .result-box span { color: #f9fafb; }
+    body.demo-dark hr { border-color: #374151; }
+  </style>
+</head>
+<body>
+<main class="demo-card">
+  <h1>🗓 Multi Calendar Datepicker — Demo</h1>
+  <p style="color:#6b7280;margin-top:-8px">هجري (أم القرى الرسمي) · ميلادي · فارسي — اختيار مفرد أو نطاق، مع عرض تقويمَين معاً.</p>
+
+  <h2>الإعدادات</h2>
+  <div class="demo-grid">
+    <label class="demo-field">
+      التقويم
+      <select id="demo_calendar">
+        <option value="gregorian">Gregorian — ميلادي</option>
+        <option value="hijri" selected>Hijri — هجري</option>
+        <option value="jalali">Jalali — فارسي</option>
+        <option value="coptic">Coptic — قبطي</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      وضع الهجري
+      <select id="demo_hijri_mode">
+        <option value="ummalqura" selected>Umm al-Qura (الرسمي السعودي)</option>
+        <option value="tabular">Tabular (خوارزمي)</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      وضع الاختيار / mode
+      <select id="demo_mode">
+        <option value="single" selected>مفرد — تاريخ واحد</option>
+        <option value="range">نطاق — من / إلى</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      تقويم ثانوي داخل الخلايا / secondaryCalendar
+      <select id="demo_secondary">
+        <option value="" selected>بدون</option>
+        <option value="gregorian">ميلادي</option>
+        <option value="hijri">هجري</option>
+        <option value="jalali">فارسي</option>
+        <option value="coptic">قبطي</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      أسماء الأشهر الميلادية / gregorianMonths
+      <select id="demo_greg_months">
+        <option value="default" selected>يناير، فبراير… (الخليج/مصر)</option>
+        <option value="levant">كانون الثاني، شباط… (الشام/العراق)</option>
+        <option value="both">كانون الثاني / يناير (مدمجة)</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      اللغة
+      <select id="demo_locale">
+        <option value="ar" selected>عربي — Arabic</option>
+        <option value="en">English</option>
+        <option value="fa">فارسی — Persian</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      الاتجاه
+      <select id="demo_dir">
+        <option value="rtl" selected>RTL</option>
+        <option value="ltr">LTR</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      صيغة العرض
+      <select id="demo_format">
+        <option value="YYYY-MM-DD" selected>YYYY-MM-DD</option>
+        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+        <option value="YYYY/MM/DD">YYYY/MM/DD</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      الأرقام
+      <select id="demo_digits">
+        <option value="latin" selected>Latin 123</option>
+        <option value="arabic">عربية ١٢٣</option>
+        <option value="persian">فارسية ۱۲۳</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      الثيم
+      <select id="demo_theme">
+        <option value="light" selected>Light</option>
+        <option value="dark">Dark</option>
+        <option value="auto">Auto (system)</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      بداية الأسبوع / weekStart
+      <select id="demo_week_start">
+        <option value="0" selected>0 — الأحد / Sunday</option>
+        <option value="1">1 — الاثنين / Monday</option>
+        <option value="5">5 — الجمعة / Friday</option>
+        <option value="6">6 — السبت / Saturday</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      تعديل الهجري / hijriAdjust (±أيام عن التقويم الرسمي)
+      <select id="demo_hijri_adjust">
+        <option value="0" selected>0 — التقويم الرسمي (افتراضي)</option>
+        <option value="-2">-2 يومان</option>
+        <option value="-1">-1 يوم</option>
+        <option value="1">+1 يوم</option>
+        <option value="2">+2 يومان</option>
+      </select>
+    </label>
+
+    <label class="demo-field">
+      أيام نهاية الأسبوع / weekendDays (تمييز لوني)
+      <select id="demo_weekend" multiple style="height:80px">
+        <option value="5">5 — الجمعة / Friday</option>
+        <option value="6" selected>6 — السبت / Saturday</option>
+        <option value="0">0 — الأحد / Sunday</option>
+      </select>
+    </label>
+
+    <label class="demo-field demo-check" style="align-self:end">
+      <input type="checkbox" id="demo_allow_input">
+      السماح بالكتابة اليدوية / allowInput
+    </label>
+  </div>
+
+  <hr>
+
+  <h2>خلفية SVG</h2>
+  <div class="demo-grid">
+    <label class="demo-field">
+      رفع ملف SVG
+      <input type="file" id="demo_svg_file" accept=".svg,image/svg+xml" style="padding:8px 10px;">
+    </label>
+    <label class="demo-field">
+      الشفافية / Opacity: <span id="demo_svg_opacity_label">0.15</span>
+      <input type="range" id="demo_svg_opacity" min="0.01" max="1" step="0.01" value="0.15" style="padding:0;border:none;margin-top:8px;">
+    </label>
+  </div>
+  <label class="demo-field" style="margin-top:10px;">
+    أو الصق كود SVG مباشرة
+    <textarea id="demo_svg_code" rows="4" style="font-size:.75rem;font-family:monospace;resize:vertical;" placeholder='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">...</svg>'></textarea>
+  </label>
+  <div class="btn-row">
+    <button id="demo_svg_apply">تطبيق الخلفية</button>
+    <button id="demo_svg_clear" class="secondary">إزالة الخلفية</button>
+  </div>
+
+  <hr>
+
+  <div class="demo-field">
+    <label for="demo_date_display">اختر التاريخ</label>
+    <input type="text" id="demo_date_display" placeholder="اضغط لفتح التقويم" autocomplete="off" readonly>
+    <input type="hidden" id="demo_date_value">
+  </div>
+
+  <div id="demo_date_result" class="demo-result">لم يتم اختيار تاريخ بعد.</div>
+
+  <div class="result-grid">
+    <div class="result-box"><strong>Display Value</strong><span id="r_display">—</span></div>
+    <div class="result-box"><strong>Gregorian DB Value</strong><span id="r_gregorian">—</span></div>
+    <div class="result-box"><strong>Current Calendar</strong><span id="r_calendar">—</span></div>
+    <div class="result-box"><strong>Mode</strong><span id="r_mode">—</span></div>
+  </div>
+
+  <div class="btn-row">
+    <button id="demo_apply">Apply Settings</button>
+    <button id="demo_clear" class="secondary">Clear</button>
+    <button id="demo_set" class="secondary">Set 2026-06-27</button>
+    <button id="demo_set_range" class="secondary">Set Range (16–27 Jun)</button>
+    <button id="demo_get" class="secondary">Get Value</button>
+  </div>
+
+  <h2>Event Details (mcd:change)</h2>
+  <pre id="demo_event_output">{}</pre>
+</main>
+
+<script src="../dist/multi-calendar-datepicker.js"></script>
+<script>
+  let picker = null;
+
+  const $ = id => document.getElementById(id);
+
+  function getSettings() {
+    const weekendSel = $('demo_weekend');
+    const weekendDays = [...weekendSel.selectedOptions].map(o => parseInt(o.value));
+    return {
+      calendar:       $('demo_calendar').value,
+      hijriMode:      $('demo_hijri_mode').value,
+      gregorianMonths: $('demo_greg_months').value,
+      mode:           $('demo_mode').value,
+      secondaryCalendar: $('demo_secondary').value || null,
+      locale:         $('demo_locale').value,
+      dir:            $('demo_dir').value,
+      displayFormat:  $('demo_format').value,
+      outputFormat:   'YYYY-MM-DD',
+      digits:         $('demo_digits').value,
+      theme:          $('demo_theme').value,
+      weekStart:      parseInt($('demo_week_start').value),
+      hijriAdjust:    parseInt($('demo_hijri_adjust').value) || 0,
+      weekendDays:    weekendDays,
+      allowInput:     $('demo_allow_input').checked,
+      outputTarget:   '#demo_date_value',
+      resultTarget:   '#demo_date_result',
+      resultTemplate: 'التاريخ المعروض: {{display}} | الميلادي لقاعدة البيانات: {{gregorian}}',
+      showResult:     true,
+      showTodayButton: true,
+      showClearButton: true,
+    };
+  }
+
+  function applyPageDir(settings) {
+    document.documentElement.lang = settings.locale;
+    document.documentElement.dir  = settings.dir;
+    document.body.classList.toggle('demo-dark', settings.theme === 'dark');
+  }
+
+  function resetDisplay() {
+    $('demo_date_display').value = '';
+    $('demo_date_value').value   = '';
+    $('demo_date_result').textContent = 'لم يتم اختيار تاريخ بعد.';
+    $('demo_event_output').textContent = '{}';
+    $('r_display').textContent   = '—';
+    $('r_gregorian').textContent = '—';
+    $('r_calendar').textContent  = '—';
+    $('r_mode').textContent      = '—';
+  }
+
+  function initDemo() {
+    const settings = getSettings();
+    applyPageDir(settings);
+
+    // allowInput needs a writable input
+    $('demo_date_display').readOnly = !settings.allowInput;
+
+    if (picker && typeof picker.destroy === 'function') picker.destroy();
+    resetDisplay();
+
+    picker = new MultiCalendarDatepicker.Datepicker('#demo_date_display', settings);
+
+    $('demo_date_display').addEventListener('mcd:change', function(e) {
+      const d = e.detail;
+      $('demo_event_output').textContent = JSON.stringify(d, null, 2);
+      $('r_display').textContent   = d.displayValue || '—';
+      $('r_gregorian').textContent = d.value        || '—';
+      $('r_calendar').textContent  = d.calendar     || '—';
+      $('r_mode').textContent      = d.mode         || '—';
+    });
+  }
+
+  // ── SVG background ────────────────────────────────────────────────────────
+  let _currentSvg = null;
+
+  $('demo_svg_opacity').addEventListener('input', function() {
+    const val = parseFloat(this.value).toFixed(2);
+    $('demo_svg_opacity_label').textContent = val;
+    if (picker && _currentSvg) picker.setBackground(_currentSvg, parseFloat(val));
+  });
+
+  $('demo_svg_file').addEventListener('change', function() {
+    const file = this.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      $('demo_svg_code').value = e.target.result;
+    };
+    reader.readAsText(file);
+  });
+
+  $('demo_svg_apply').addEventListener('click', function() {
+    const code = $('demo_svg_code').value.trim();
+    if (!code) return;
+    const opacity = parseFloat($('demo_svg_opacity').value);
+    _currentSvg = code;
+    if (picker) picker.setBackground(code, opacity);
+  });
+
+  $('demo_svg_clear').addEventListener('click', function() {
+    _currentSvg = null;
+    $('demo_svg_code').value = '';
+    $('demo_svg_file').value = '';
+    if (picker) picker.clearBackground();
+  });
+
+  // ── Buttons ───────────────────────────────────────────────────────────────
+  $('demo_apply').addEventListener('click', function() {
+    initDemo();
+    if (_currentSvg) {
+      picker.setBackground(_currentSvg, parseFloat($('demo_svg_opacity').value));
+    }
+  });
+
+  $('demo_clear').addEventListener('click', function() {
+    if (picker) picker.clear();
+    $('demo_event_output').textContent = '{}';
+    $('r_display').textContent   = '—';
+    $('r_gregorian').textContent = '—';
+    $('r_calendar').textContent  = '—';
+    $('r_mode').textContent      = '—';
+  });
+
+  $('demo_set').addEventListener('click', function() {
+    if (!picker) return;
+    if ($('demo_mode').value === 'range') { alert('الوضع الحالي نطاق — استخدم زر Set Range'); return; }
+    picker.setGregorianValue('2026-06-27');
+  });
+
+  $('demo_set_range').addEventListener('click', function() {
+    if (!picker) return;
+    if ($('demo_mode').value !== 'range') { alert('فعّل وضع النطاق أولاً ثم Apply Settings'); return; }
+    picker.setGregorianRange('2026-06-16', '2026-06-27');
+  });
+
+  $('demo_get').addEventListener('click', function() {
+    if (picker) {
+      const data = picker.getResult();
+      $('demo_event_output').textContent = JSON.stringify(data, null, 2);
+    }
+  });
+
+  initDemo();
+</script>
+</body>
+</html>

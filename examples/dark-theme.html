@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Dark Themes — Multi Calendar Datepicker</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 32px 16px;
+      max-width: 720px;
+      margin: auto;
+      background: #020617;
+      color: #e2e8f0;
+    }
+    h1 { font-size: 1.4rem; margin: 0 0 4px; color: #f8fafc; }
+    .subtitle { color: #64748b; font-size: .9rem; margin: 0 0 28px; }
+    .card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #334155;
+      margin: 0 0 16px;
+    }
+
+    /* ── Theme grid ── */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .theme-item { display: flex; flex-direction: column; gap: 8px; }
+    .theme-label { font-size: .78rem; font-weight: 600; color: #94a3b8; }
+
+    input[type="text"] {
+      font: inherit;
+      border: 1.5px solid #1e293b;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      background: #0f172a;
+      color: #e2e8f0;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { outline: none; border-color: #3b82f6; }
+
+    pre {
+      background: #020617;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-size: .8rem;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 0;
+      border: 1px solid #1e293b;
+    }
+    .kw  { color: #7dd3fc; }
+    .str { color: #86efac; }
+    .cm  { color: #334155; }
+    .key { color: #c4b5fd; }
+    .val { color: #fbbf24; }
+
+    /* ── Midnight picker override example ── */
+    .midnight-wrap .mcd-picker {
+      --mcd-bg:          #0f172a;
+      --mcd-text:        #e2e8f0;
+      --mcd-muted:       #94a3b8;
+      --mcd-border:      #1e293b;
+      --mcd-primary:     #6366f1;
+      --mcd-primary-text:#ffffff;
+      --mcd-hover-bg:    #1e1b4b;
+      --mcd-hover-text:  #a5b4fc;
+      --mcd-outside-text:#334155;
+      --mcd-day-text:    #e2e8f0;
+      --mcd-today-text:  #e2e8f0;
+      --mcd-weekday-text:#94a3b8;
+      --mcd-nav-text:    #e2e8f0;
+      --mcd-select-bg:   #1e293b;
+      --mcd-select-text: #e2e8f0;
+      --mcd-select-border:#334155;
+      --mcd-btn-bg:      #1e293b;
+      --mcd-btn-text:    #e2e8f0;
+      --mcd-btn-border:  #334155;
+      --mcd-shadow:      0 10px 40px rgba(0,0,0,.5);
+    }
+
+    .notice {
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: .8rem;
+      margin-top: 14px;
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      line-height: 1.6;
+    }
+    .notice-info { background: #1e293b; border: 1px solid #334155; color: #94a3b8; }
+    .notice-tip  { background: #1e1b4b; border: 1px solid #312e81; color: #a5b4fc; }
+  </style>
+</head>
+<body>
+  <h1>Dark Themes / الثيمات الداكنة</h1>
+  <p class="subtitle">Built-in dark themes + custom dark configuration — ثيمات داكنة جاهزة + إنشاء ثيم مخصص</p>
+
+  <!-- Built-in dark themes -->
+  <div class="card">
+    <p class="card-title">Built-in Dark Themes</p>
+    <div class="theme-grid">
+      <div class="theme-item">
+        <span class="theme-label">theme: 'dark'</span>
+        <input type="text" id="d_dark" placeholder="Dark" autocomplete="off" readonly>
+        <input type="hidden" id="d_dark_val">
+      </div>
+      <div class="theme-item">
+        <span class="theme-label">theme: 'midnight'</span>
+        <input type="text" id="d_midnight" placeholder="Midnight" autocomplete="off" readonly>
+        <input type="hidden" id="d_midnight_val">
+      </div>
+      <div class="theme-item">
+        <span class="theme-label">theme: 'ocean'</span>
+        <input type="text" id="d_ocean" placeholder="Ocean" autocomplete="off" readonly>
+        <input type="hidden" id="d_ocean_val">
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom dark via CSS -->
+  <div class="card">
+    <p class="card-title">Custom Dark via CSS Variables (Midnight variant)</p>
+    <div class="midnight-wrap">
+      <input type="text" id="d_custom" placeholder="Custom midnight via CSS" autocomplete="off" readonly style="margin-bottom:0">
+      <input type="hidden" id="d_custom_val">
+    </div>
+    <div class="notice notice-tip">
+      <span>💡</span>
+      <span>
+        You can scope dark theme vars to a specific wrapper class in CSS — this avoids affecting other pickers on the page.
+        The <code>.midnight-wrap .mcd-picker</code> rule in this page's &lt;style&gt; block demonstrates this.
+        <br>
+        يمكن تطبيق الثيم على تقويم واحد فقط بتعريف المتغيرات على كلاس محدد.
+      </span>
+    </div>
+  </div>
+
+  <!-- Code -->
+  <div class="card">
+    <p class="card-title">Code</p>
+<pre><span class="cm">// Option A: Use a built-in named theme</span>
+MultiCalendarDatepicker.init(<span class="str">'#d_dark'</span>, {
+  <span class="key">calendar</span>: <span class="str">'gregorian'</span>,
+  <span class="key">locale</span>:   <span class="str">'en'</span>,
+  <span class="key">theme</span>:    <span class="str">'dark'</span>,      <span class="cm">// 'dark' | 'midnight' | 'ocean' | 'warm' | ...</span>
+  <span class="key">outputTarget</span>: <span class="str">'#d_dark_val'</span>,
+});
+
+<span class="cm">// Option B: theme: 'auto' — matches the OS dark/light preference</span>
+MultiCalendarDatepicker.init(<span class="str">'#my_picker'</span>, {
+  <span class="key">theme</span>: <span class="str">'auto'</span>, <span class="cm">// uses @media (prefers-color-scheme: dark)</span>
+});
+
+<span class="cm">// Option C: Inline theme object — full custom dark palette</span>
+MultiCalendarDatepicker.init(<span class="str">'#my_picker'</span>, {
+  <span class="key">theme</span>: {
+    <span class="key">vars</span>: {
+      <span class="str">'--mcd-bg'</span>:          <span class="str">'#0f172a'</span>,
+      <span class="str">'--mcd-text'</span>:        <span class="str">'#e2e8f0'</span>,
+      <span class="str">'--mcd-primary'</span>:     <span class="str">'#6366f1'</span>,
+      <span class="str">'--mcd-primary-text'</span>:<span class="str">'#ffffff'</span>,
+      <span class="str">'--mcd-day-text'</span>:    <span class="str">'#e2e8f0'</span>,  <span class="cm">// must be explicit in dark themes!</span>
+      <span class="str">'--mcd-weekday-text'</span>:<span class="str">'#94a3b8'</span>,
+      <span class="cm">// ... more vars</span>
+    },
+  },
+});</pre>
+
+    <div class="notice notice-info">
+      <span>⚠️</span>
+      <span>
+        <strong>Dark theme rule:</strong> Always set <code>--mcd-day-text</code>,
+        <code>--mcd-today-text</code>, <code>--mcd-weekday-text</code>, and <code>--mcd-nav-text</code>
+        explicitly to a light color. Relying on <code>var(--mcd-text)</code> inheritance can fail in some browsers when
+        vars are applied inline via ThemeManager.
+        <br>
+        <strong>قاعدة الثيم الداكن:</strong> حدد ألوان النصوص صراحةً في الثيمات الداكنة — لا تعتمد على الوراثة.
+      </span>
+    </div>
+  </div>
+
+  <script src="../dist/multi-calendar-datepicker.js"></script>
+  <script>
+    MultiCalendarDatepicker.init('#d_dark', {
+      calendar:     'gregorian',
+      locale:       'en',
+      theme:        'dark',
+      outputTarget: '#d_dark_val',
+    });
+
+    MultiCalendarDatepicker.init('#d_midnight', {
+      calendar:     'gregorian',
+      locale:       'en',
+      theme:        'midnight',
+      outputTarget: '#d_midnight_val',
+    });
+
+    MultiCalendarDatepicker.init('#d_ocean', {
+      calendar:     'hijri',
+      locale:       'ar',
+      dir:          'rtl',
+      theme:        'ocean',
+      outputTarget: '#d_ocean_val',
+    });
+
+    MultiCalendarDatepicker.init('#d_custom', {
+      calendar:     'gregorian',
+      locale:       'en',
+      outputTarget: '#d_custom_val',
+    });
+  </script>
+</body>
+</html>

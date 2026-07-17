@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Min / Max Dates — Multi Calendar Datepicker</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 32px 16px;
+      max-width: 680px;
+      margin: auto;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    h1 { font-size: 1.4rem; margin: 0 0 4px; }
+    .subtitle { color: #64748b; font-size: .9rem; margin: 0 0 28px; }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin: 0 0 16px;
+    }
+
+    /* ── Inputs ── */
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: .85rem; font-weight: 600; color: #374151; }
+    label span { font-weight: 400; color: #9ca3af; margin-inline-start: 4px; }
+    input[type="text"] {
+      font: inherit;
+      border: 1.5px solid #d1d5db;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      background: #fff;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { outline: none; border-color: #3b82f6; }
+
+    /* ── Date range banner ── */
+    .range-banner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: .85rem;
+      margin-bottom: 18px;
+    }
+    .range-banner strong { color: #1d4ed8; }
+    .range-banner .arrow { color: #93c5fd; font-size: 1.1rem; }
+
+    /* ── Result ── */
+    .result {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 10px;
+      font-size: .88rem;
+      color: #15803d;
+      min-height: 44px;
+    }
+    .result.empty { color: #94a3b8; background: #f9fafb; border-color: #e5e7eb; }
+
+    /* ── Code snippet ── */
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-size: .8rem;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .kw  { color: #7dd3fc; }
+    .str { color: #86efac; }
+    .cm  { color: #64748b; }
+    .key { color: #c4b5fd; }
+    .val { color: #fbbf24; }
+
+    /* ── Options legend ── */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 500px) { .options-grid { grid-template-columns: 1fr; } }
+    .opt {
+      padding: 10px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .opt-name { font-size: .78rem; font-weight: 700; color: #6366f1; font-family: monospace; }
+    .opt-desc { font-size: .78rem; color: #64748b; margin-top: 3px; }
+    .opt-desc-ar { font-size: .75rem; color: #94a3b8; margin-top: 2px; }
+
+    /* ── RTL card ── */
+    .rtl-card { direction: rtl; text-align: right; }
+    .rtl-card label { font-family: system-ui, sans-serif; }
+
+    /* ── Disabled days indicator ── */
+    .notice {
+      font-size: .82rem;
+      color: #6b7280;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .notice-icon { font-size: 1rem; flex-shrink: 0; }
+  </style>
+</head>
+<body>
+
+  <h1>Min / Max Dates</h1>
+  <p class="subtitle">
+    Restrict selectable dates to a specific range — تحديد نطاق للتواريخ القابلة للاختيار
+  </p>
+
+  <!-- ── Example 1: Gregorian with dynamic range ── -->
+  <div class="card">
+    <p class="card-title">Example 1 — Gregorian · Dynamic range (30 days window)</p>
+
+    <div id="range-info" class="range-banner">
+      <strong id="range-min">…</strong>
+      <span class="arrow">→</span>
+      <strong id="range-max">…</strong>
+      <span style="color:#4b5563">&nbsp;(past 10 days · next 20 days)</span>
+    </div>
+
+    <div class="field">
+      <label for="g_display">Booking Date <span>/ تاريخ الحجز</span></label>
+      <input type="text" id="g_display" placeholder="Click to pick a date" autocomplete="off" readonly>
+      <input type="hidden" id="g_value" name="booking_date">
+    </div>
+
+    <div id="g_result" class="result empty">No date selected yet. — لم يتم الاختيار بعد.</div>
+
+    <div class="notice">
+      <span class="notice-icon">ℹ️</span>
+      <span>Greyed-out days are outside the allowed range and cannot be clicked.
+        Days before <strong id="notice-min">…</strong> and after <strong id="notice-max">…</strong> are disabled.</span>
+    </div>
+  </div>
+
+  <!-- ── Example 2: Hijri calendar + disabled weekdays ── -->
+  <div class="card rtl-card">
+    <p class="card-title" style="text-align:right">
+      مثال 2 — هجري · نطاق + تعطيل أيام الجمعة والسبت
+    </p>
+
+    <div class="field" style="text-align:right">
+      <label for="h_display">تاريخ الموعد <span style="font-weight:400;color:#9ca3af">/ Appointment</span></label>
+      <input type="text" id="h_display" placeholder="اضغط لاختيار التاريخ" autocomplete="off" readonly>
+      <input type="hidden" id="h_value" name="appointment_date">
+    </div>
+
+    <div id="h_result" class="result empty" style="direction:rtl;text-align:right">لم يتم الاختيار بعد. — Not selected.</div>
+
+    <div class="notice" style="direction:rtl;text-align:right">
+      <span class="notice-icon">ℹ️</span>
+      <span>التقويم هجري ولكن الحد الأدنى والأقصى يُحدد بالميلادي دائماً.
+        أيام الجمعة (5) والسبت (6) معطّلة لأنها إجازة رسمية.</span>
+    </div>
+  </div>
+
+  <!-- ── Code ── -->
+  <div class="card">
+    <p class="card-title">Code</p>
+<pre><span class="cm">// Compute a dynamic range relative to today</span>
+<span class="kw">const</span> today   = <span class="kw">new</span> Date();
+<span class="kw">const</span> minDate = <span class="val">offsetDate</span>(today, <span class="val">-10</span>); <span class="cm">// 10 days ago</span>
+<span class="kw">const</span> maxDate = <span class="val">offsetDate</span>(today, <span class="val">+20</span>); <span class="cm">// 20 days from now</span>
+
+<span class="cm">// Example 1 — Gregorian</span>
+MultiCalendarDatepicker.init(<span class="str">'#g_display'</span>, {
+  <span class="key">calendar</span>:        <span class="str">'gregorian'</span>,
+  <span class="key">locale</span>:          <span class="str">'en'</span>,
+  <span class="key">minDate</span>:         minDate, <span class="cm">// 'YYYY-MM-DD' string or {year,month,day}</span>
+  <span class="key">maxDate</span>:         maxDate,
+  <span class="key">outputTarget</span>:    <span class="str">'#g_value'</span>,
+  <span class="key">resultTarget</span>:   <span class="str">'#g_result'</span>,
+  <span class="key">resultTemplate</span>: <span class="str">'Selected: {{gregorian}}'</span>,
+});
+
+<span class="cm">// Example 2 — Hijri + disabled weekdays</span>
+MultiCalendarDatepicker.init(<span class="str">'#h_display'</span>, {
+  <span class="key">calendar</span>:          <span class="str">'hijri'</span>,
+  <span class="key">locale</span>:            <span class="str">'ar'</span>,
+  <span class="key">dir</span>:               <span class="str">'rtl'</span>,
+  <span class="key">minDate</span>:           minDate,
+  <span class="key">maxDate</span>:           maxDate,
+  <span class="key">disabledWeekDays</span>: [<span class="val">5</span>, <span class="val">6</span>], <span class="cm">// 0=Sun … 5=Fri, 6=Sat</span>
+  <span class="key">outputTarget</span>:      <span class="str">'#h_value'</span>,
+  <span class="key">resultTarget</span>:     <span class="str">'#h_result'</span>,
+  <span class="key">resultTemplate</span>:   <span class="str">'الميلادي: {{gregorian}} | الهجري: {{display}}'</span>,
+});</pre>
+  </div>
+
+  <!-- ── Options explanation ── -->
+  <div class="card">
+    <p class="card-title">Key Options — الخيارات المهمة</p>
+    <div class="options-grid">
+      <div class="opt">
+        <div class="opt-name">minDate</div>
+        <div class="opt-desc">Earliest selectable date (Gregorian ISO string or {year,month,day} object)</div>
+        <div class="opt-desc-ar">أقدم تاريخ يمكن اختياره، دائماً بالميلادي</div>
+      </div>
+      <div class="opt">
+        <div class="opt-name">maxDate</div>
+        <div class="opt-desc">Latest selectable date (same format as minDate)</div>
+        <div class="opt-desc-ar">أحدث تاريخ يمكن اختياره</div>
+      </div>
+      <div class="opt">
+        <div class="opt-name">disabledWeekDays</div>
+        <div class="opt-desc">Array of weekday numbers to disable: 0=Sun, 1=Mon … 6=Sat</div>
+        <div class="opt-desc-ar">أرقام الأيام المعطّلة: 0=الأحد … 5=الجمعة، 6=السبت</div>
+      </div>
+      <div class="opt">
+        <div class="opt-name">disabledDates</div>
+        <div class="opt-desc">Array of specific Gregorian ISO strings to block individually</div>
+        <div class="opt-desc-ar">تواريخ محددة يجب إيقافها (بالميلادي)</div>
+      </div>
+    </div>
+
+    <div class="notice" style="margin-top:16px">
+      <span class="notice-icon">💡</span>
+      <span>
+        <strong>Important:</strong> minDate / maxDate are always in Gregorian regardless of the displayed calendar.
+        The library converts internally. You never need to convert to Hijri or Jalali.<br>
+        <strong style="color:#6366f1">مهم:</strong> minDate و maxDate دائماً بالتقويم الميلادي حتى لو التقويم المعروض هجري أو فارسي. المكتبة تتولى التحويل تلقائياً.
+      </span>
+    </div>
+  </div>
+
+  <script src="../dist/multi-calendar-datepicker.js"></script>
+  <script>
+    function offsetDate(base, days) {
+      const d = new Date(base);
+      d.setDate(d.getDate() + days);
+      return d.toISOString().split('T')[0]; // 'YYYY-MM-DD'
+    }
+
+    const today   = new Date();
+    const minDate = offsetDate(today, -10);
+    const maxDate = offsetDate(today, +20);
+
+    // Update the UI labels
+    document.getElementById('range-min').textContent   = minDate;
+    document.getElementById('range-max').textContent   = maxDate;
+    document.getElementById('notice-min').textContent  = minDate;
+    document.getElementById('notice-max').textContent  = maxDate;
+
+    // Example 1 — Gregorian with dynamic range
+    MultiCalendarDatepicker.init('#g_display', {
+      calendar:        'gregorian',
+      locale:          'en',
+      dir:             'ltr',
+      minDate:         minDate,
+      maxDate:         maxDate,
+      outputTarget:    '#g_value',
+      resultTarget:    '#g_result',
+      resultTemplate:  'Selected: {{gregorian}}',
+    });
+
+    document.getElementById('g_display').addEventListener('mcd:change', function() {
+      document.getElementById('g_result').classList.remove('empty');
+    });
+
+    // Example 2 — Hijri calendar + disabled Fri & Sat
+    MultiCalendarDatepicker.init('#h_display', {
+      calendar:          'hijri',
+      locale:            'ar',
+      dir:               'rtl',
+      minDate:           minDate,
+      maxDate:           maxDate,
+      disabledWeekDays:  [5, 6],
+      outputTarget:      '#h_value',
+      resultTarget:      '#h_result',
+      resultTemplate:    'الميلادي: {{gregorian}} | الهجري: {{display}}',
+    });
+
+    document.getElementById('h_display').addEventListener('mcd:change', function() {
+      document.getElementById('h_result').classList.remove('empty');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تقويمان معاً — Dual Calendar</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    body {
+      font-family: system-ui, sans-serif; background: #f3f4f6;
+      margin: 0; padding: 40px; color: #111827;
+    }
+    .card {
+      max-width: 480px; margin: auto; background: #fff;
+      border-radius: 16px; padding: 28px; border: 1px solid #e5e7eb;
+      box-shadow: 0 16px 40px rgba(0,0,0,.08);
+    }
+    h1 { font-size: 1.25rem; margin-top: 0; }
+    label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 6px; color: #374151; }
+    input {
+      font: inherit; width: 100%; box-sizing: border-box;
+      border: 1px solid #d1d5db; border-radius: 10px; padding: 11px 13px;
+    }
+    .out {
+      margin-top: 16px; padding: 12px 14px; border-radius: 10px;
+      background: #eff6ff; border: 1px solid #bfdbfe; font-size: .85rem;
+      min-height: 20px;
+    }
+    .hint { color: #6b7280; font-size: .8rem; margin-top: 14px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>هجري رئيسي + ميلادي مصغّر (مثل تقويم الجوال)</h1>
+  <label for="date">التاريخ</label>
+  <input id="date" placeholder="اضغط لفتح التقويم" readonly autocomplete="off">
+  <div class="out" id="out">لم يتم اختيار تاريخ بعد.</div>
+  <p class="hint">كل خلية تعرض اليوم الهجري بخط كبير واليوم الميلادي المقابل بخط صغير. أول يوم في الشهر الميلادي يظهر بصيغة يوم/شهر.</p>
+</div>
+
+<script src="../dist/multi-calendar-datepicker.js"></script>
+<script>
+  const picker = new MultiCalendarDatepicker.Datepicker('#date', {
+    calendar:          'hijri',
+    hijriMode:         'ummalqura',
+    secondaryCalendar: 'gregorian',
+    locale:            'ar',
+    dir:               'rtl',
+    weekendDays:       [5, 6],
+    resultTemplate:    'الهجري: {{display}} — الميلادي: {{gregorian}}',
+  });
+
+  document.getElementById('date').addEventListener('mcd:change', e => {
+    document.getElementById('out').textContent = e.detail.resultText;
+  });
+</script>
+</body>
+</html>

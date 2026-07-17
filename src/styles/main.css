@@ -1,0 +1,479 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   Multi Calendar Datepicker — CSS Variables Reference
+   All visual properties are controlled via CSS custom properties.
+   Override any variable on :root, .mcd-picker, or a custom selector.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Base colors ─────────────────────────────────────────────────────── */
+  --mcd-bg:            #ffffff;          /* picker background               */
+  --mcd-text:          #111827;          /* primary text                    */
+  --mcd-muted:         #6b7280;          /* secondary / dimmed text         */
+  --mcd-border:        #e5e7eb;          /* borders everywhere              */
+  --mcd-primary:       #2563eb;          /* accent — selected, today ring   */
+  --mcd-primary-text:  #ffffff;          /* text on primary-colored elements*/
+  --mcd-hover-bg:      #eff6ff;          /* hover background                */
+  --mcd-hover-text:    #2563eb;          /* hover text color                */
+
+  /* ── Picker container ────────────────────────────────────────────────── */
+  --mcd-width:         300px;            /* picker popup width              */
+  --mcd-padding:       12px;             /* picker inner padding            */
+  --mcd-radius:        12px;             /* picker border-radius            */
+  --mcd-border-width:  1px;             /* picker border thickness         */
+  --mcd-shadow:        0 10px 30px rgba(0,0,0,.12); /* drop shadow         */
+  --mcd-font:          system-ui, -apple-system, BlinkMacSystemFont,
+                       "Segoe UI", sans-serif;
+
+  /* ── Header ──────────────────────────────────────────────────────────── */
+  --mcd-header-gap:    6px;
+  --mcd-header-mb:     10px;
+
+  /* ── Month / Year selects ────────────────────────────────────────────── */
+  --mcd-select-bg:           var(--mcd-bg);
+  --mcd-select-text:         var(--mcd-text);
+  --mcd-select-border:       var(--mcd-border);
+  --mcd-select-radius:       6px;
+  --mcd-select-font-size:    0.85rem;
+  --mcd-select-font-weight:  600;
+  --mcd-select-padding:      2px 4px;
+
+  /* ── Navigation buttons (‹ ›) ────────────────────────────────────────── */
+  --mcd-nav-bg:          transparent;
+  --mcd-nav-text:        var(--mcd-text);
+  --mcd-nav-border:      var(--mcd-border);
+  --mcd-nav-radius:      8px;
+  --mcd-nav-font-size:   1.2rem;
+  --mcd-nav-padding:     4px 10px;
+  --mcd-nav-hover-bg:    var(--mcd-hover-bg);
+  --mcd-nav-hover-text:  var(--mcd-hover-text);
+
+  /* ── Weekday header row ──────────────────────────────────────────────── */
+  --mcd-weekday-text:         var(--mcd-muted);
+  --mcd-weekday-bg:           transparent;
+  --mcd-weekday-font-size:    0.72rem;
+  --mcd-weekday-font-weight:  600;
+  --mcd-weekday-padding:      4px 0;
+
+  /* ── Days grid ───────────────────────────────────────────────────────── */
+  --mcd-grid-gap:        2px;
+  --mcd-day-font-size:   0.82rem;
+  --mcd-day-radius:      8px;
+  --mcd-day-padding:     7px 0;
+  --mcd-day-bg:          transparent;
+  --mcd-day-text:        var(--mcd-text);
+  --mcd-day-hover-bg:    var(--mcd-hover-bg);
+  --mcd-day-hover-text:  var(--mcd-hover-text);
+  --mcd-day-focus-ring:  var(--mcd-primary);
+  --mcd-day-focus-ring-width: 2px;
+
+  /* ── Today ───────────────────────────────────────────────────────────── */
+  --mcd-today-ring:         var(--mcd-primary);
+  --mcd-today-ring-width:   2px;
+  --mcd-today-bg:           transparent;
+  --mcd-today-text:         var(--mcd-text);
+  --mcd-today-font-weight:  700;
+
+  /* ── Selected day ────────────────────────────────────────────────────── */
+  --mcd-selected-bg:           var(--mcd-primary);
+  --mcd-selected-text:         var(--mcd-primary-text);
+  --mcd-selected-font-weight:  700;
+  --mcd-selected-radius:       var(--mcd-day-radius);
+
+  /* ── Outside-month days ──────────────────────────────────────────────── */
+  --mcd-outside-text:    #d1d5db;
+  --mcd-outside-bg:      transparent;
+
+  /* ── Disabled days ───────────────────────────────────────────────────── */
+  --mcd-disabled-text:     var(--mcd-outside-text);
+  --mcd-disabled-opacity:  0.45;
+
+  /* ── Result preview (inside picker) ──────────────────────────────────── */
+  --mcd-preview-font-size:  0.78rem;
+  --mcd-preview-text:       var(--mcd-muted);
+  --mcd-preview-bg:         transparent;
+  --mcd-preview-border:     var(--mcd-border);
+  --mcd-preview-border-width: 1px;
+  --mcd-preview-mt:         8px;
+  --mcd-preview-padding:    4px 0;
+
+  /* ── Footer ──────────────────────────────────────────────────────────── */
+  --mcd-footer-gap:  6px;
+  --mcd-footer-mt:   10px;
+
+  /* ── Footer buttons (shared base) ────────────────────────────────────── */
+  --mcd-btn-font-size:   0.8rem;
+  --mcd-btn-padding:     6px 8px;
+  --mcd-btn-radius:      8px;
+  --mcd-btn-bg:          var(--mcd-bg);
+  --mcd-btn-text:        var(--mcd-text);
+  --mcd-btn-border:      var(--mcd-border);
+  --mcd-btn-border-width: 1px;
+  --mcd-btn-hover-bg:    var(--mcd-hover-bg);
+  --mcd-btn-hover-text:  var(--mcd-hover-text);
+
+  /* ── Today button ────────────────────────────────────────────────────── */
+  --mcd-btn-today-bg:        var(--mcd-primary);
+  --mcd-btn-today-text:      var(--mcd-primary-text);
+  --mcd-btn-today-border:    var(--mcd-primary);
+  --mcd-btn-today-hover-bg:  var(--mcd-primary);
+  --mcd-btn-today-hover-opacity: 0.88;
+
+  /* ── Clear button ────────────────────────────────────────────────────── */
+  --mcd-btn-clear-bg:        var(--mcd-bg);
+  --mcd-btn-clear-text:      var(--mcd-text);
+  --mcd-btn-clear-border:    var(--mcd-border);
+  --mcd-btn-clear-hover-bg:  var(--mcd-hover-bg);
+
+  /* ── Close button ────────────────────────────────────────────────────── */
+  --mcd-btn-close-bg:        var(--mcd-bg);
+  --mcd-btn-close-text:      var(--mcd-text);
+  --mcd-btn-close-border:    var(--mcd-border);
+  --mcd-btn-close-hover-bg:  var(--mcd-hover-bg);
+
+  /* ── Background image ────────────────────────────────────────────────────── */
+  --mcd-bg-image:         none;        /* any CSS background-image value       */
+  --mcd-bg-image-opacity: 0.15;       /* 0–1: how visible the image is        */
+  --mcd-bg-size:          cover;      /* CSS background-size                  */
+  --mcd-bg-position:      center;     /* CSS background-position              */
+  --mcd-bg-repeat:        no-repeat;  /* CSS background-repeat                */
+
+  /* ── Weekend days (weekendDays option) ───────────────────────────────────── */
+  --mcd-weekend-text: #dc2626;        /* text color for weekend day cells     */
+  --mcd-weekend-bg:   transparent;   /* background for weekend day cells     */
+
+  /* ── Range selection (mode: 'range') ─────────────────────────────────────── */
+  --mcd-range-bg:     #dbeafe;        /* days between start and end           */
+  --mcd-range-text:   var(--mcd-text);
+
+  /* ── Secondary calendar (secondaryCalendar option) ───────────────────────── */
+  --mcd-secondary-font-size: 0.62em;  /* small date under the main day number */
+  --mcd-secondary-text:      var(--mcd-muted);
+}
+
+/* ── Dark theme ──────────────────────────────────────────────────────────── */
+.mcd-theme-dark {
+  --mcd-bg:            #111827;
+  --mcd-text:          #f9fafb;
+  --mcd-muted:         #9ca3af;
+  --mcd-border:        #374151;
+  --mcd-primary:       #3b82f6;
+  --mcd-primary-text:  #ffffff;
+  --mcd-hover-bg:      #1e3a5f;
+  --mcd-hover-text:    #93c5fd;
+  --mcd-outside-text:  #4b5563;
+  /* explicit — avoids var() chain resolution issues in some browsers */
+  --mcd-day-text:      #f9fafb;
+  --mcd-today-text:    #f9fafb;
+  --mcd-weekday-text:  #9ca3af;
+  --mcd-nav-text:      #f9fafb;
+  --mcd-btn-text:      #f9fafb;
+  --mcd-btn-bg:        #1f2937;
+  --mcd-btn-border:    #4b5563;
+  --mcd-btn-hover-bg:  #1e3a5f;
+  --mcd-btn-hover-text: #93c5fd;
+  --mcd-select-bg:     #1f2937;
+  --mcd-select-text:   #f9fafb;
+  --mcd-select-border: #4b5563;
+  --mcd-range-bg:      #1e3a5f;
+  --mcd-range-text:    #f9fafb;
+  --mcd-secondary-text: #9ca3af;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mcd-theme-auto {
+    --mcd-bg:            #111827;
+    --mcd-text:          #f9fafb;
+    --mcd-muted:         #9ca3af;
+    --mcd-border:        #374151;
+    --mcd-primary:       #3b82f6;
+    --mcd-primary-text:  #ffffff;
+    --mcd-hover-bg:      #1e3a5f;
+    --mcd-hover-text:    #93c5fd;
+    --mcd-outside-text:  #4b5563;
+    --mcd-day-text:      #f9fafb;
+    --mcd-today-text:    #f9fafb;
+    --mcd-weekday-text:  #9ca3af;
+    --mcd-nav-text:      #f9fafb;
+    --mcd-btn-text:      #f9fafb;
+    --mcd-btn-bg:        #1f2937;
+    --mcd-btn-border:    #4b5563;
+    --mcd-btn-hover-bg:  #1e3a5f;
+    --mcd-btn-hover-text: #93c5fd;
+    --mcd-select-bg:     #1f2937;
+    --mcd-select-text:   #f9fafb;
+    --mcd-select-border: #4b5563;
+    --mcd-range-bg:      #1e3a5f;
+    --mcd-range-text:    #f9fafb;
+    --mcd-secondary-text: #9ca3af;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   Styles — all values reference variables above
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Picker container ────────────────────────────────────────────────────── */
+.mcd-picker {
+  font-family:    var(--mcd-font);
+  background:     var(--mcd-bg);
+  color:          var(--mcd-text);
+  border:         var(--mcd-border-width) solid var(--mcd-border);
+  border-radius:  var(--mcd-radius);
+  box-shadow:     var(--mcd-shadow);
+  width:          var(--mcd-width);
+  padding:        var(--mcd-padding);
+  box-sizing:     border-box;
+  user-select:    none;
+  position:       relative;
+  overflow:       hidden;
+  isolation:      isolate;
+}
+
+/* Background image layer — rendered behind all picker content */
+.mcd-picker::before {
+  content:             '';
+  position:            absolute;
+  inset:               0;
+  z-index:             -1;
+  background-image:    var(--mcd-bg-image);
+  background-size:     var(--mcd-bg-size);
+  background-position: var(--mcd-bg-position);
+  background-repeat:   var(--mcd-bg-repeat);
+  opacity:             var(--mcd-bg-image-opacity);
+  pointer-events:      none;
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.mcd-header {
+  display:         flex;
+  align-items:     center;
+  justify-content: space-between;
+  margin-bottom:   var(--mcd-header-mb);
+  gap:             var(--mcd-header-gap);
+}
+
+.mcd-month-year-wrap {
+  display:         flex;
+  gap:             var(--mcd-header-gap);
+  flex:            1;
+  justify-content: center;
+}
+
+/* ── Month / Year selects ────────────────────────────────────────────────── */
+.mcd-select-month,
+.mcd-select-year {
+  font-family:   var(--mcd-font);
+  font-size:     var(--mcd-select-font-size);
+  font-weight:   var(--mcd-select-font-weight);
+  color:         var(--mcd-select-text);
+  background:    var(--mcd-select-bg);
+  border:        1px solid var(--mcd-select-border);
+  border-radius: var(--mcd-select-radius);
+  padding:       var(--mcd-select-padding);
+  cursor:        pointer;
+}
+.mcd-select-month { max-width: 110px; }
+.mcd-select-year  { max-width:  75px; }
+
+/* ── Navigation buttons ──────────────────────────────────────────────────── */
+.mcd-nav {
+  background:    var(--mcd-nav-bg);
+  border:        1px solid var(--mcd-nav-border);
+  border-radius: var(--mcd-nav-radius);
+  color:         var(--mcd-nav-text);
+  cursor:        pointer;
+  font-size:     var(--mcd-nav-font-size);
+  line-height:   1;
+  padding:       var(--mcd-nav-padding);
+  transition:    background 0.15s, color 0.15s;
+  flex-shrink:   0;
+}
+.mcd-nav:hover {
+  background: var(--mcd-nav-hover-bg);
+  color:      var(--mcd-nav-hover-text);
+}
+
+/* ── Weekdays row ────────────────────────────────────────────────────────── */
+.mcd-weekdays {
+  display:               grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom:         4px;
+}
+
+.mcd-weekday {
+  text-align:  center;
+  font-size:   var(--mcd-weekday-font-size);
+  font-weight: var(--mcd-weekday-font-weight);
+  color:       var(--mcd-weekday-text);
+  background:  var(--mcd-weekday-bg);
+  padding:     var(--mcd-weekday-padding);
+}
+
+/* ── Days grid ───────────────────────────────────────────────────────────── */
+.mcd-grid {
+  display:               grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap:                   var(--mcd-grid-gap);
+}
+
+.mcd-day {
+  text-align:    center;
+  font-size:     var(--mcd-day-font-size);
+  border-radius: var(--mcd-day-radius);
+  padding:       var(--mcd-day-padding);
+  background:    var(--mcd-day-bg);
+  color:         var(--mcd-day-text);
+  cursor:        pointer;
+  transition:    background 0.1s, color 0.1s;
+  outline:       none;
+}
+.mcd-day:hover:not(.mcd-day--disabled):not(.mcd-day--outside) {
+  background: var(--mcd-day-hover-bg);
+  color:      var(--mcd-day-hover-text);
+}
+.mcd-day:focus-visible {
+  box-shadow: 0 0 0 var(--mcd-day-focus-ring-width) var(--mcd-day-focus-ring);
+}
+
+/* ── Outside days ────────────────────────────────────────────────────────── */
+.mcd-day--outside {
+  color:      var(--mcd-outside-text);
+  background: var(--mcd-outside-bg);
+  cursor:     default;
+}
+
+/* ── Today ───────────────────────────────────────────────────────────────── */
+.mcd-day--today {
+  background:  var(--mcd-today-bg);
+  color:       var(--mcd-today-text);
+  font-weight: var(--mcd-today-font-weight);
+  box-shadow:  inset 0 0 0 var(--mcd-today-ring-width) var(--mcd-today-ring);
+}
+
+/* ── Selected day ────────────────────────────────────────────────────────── */
+.mcd-day--selected {
+  background:   var(--mcd-selected-bg) !important;
+  color:        var(--mcd-selected-text) !important;
+  font-weight:  var(--mcd-selected-font-weight);
+  border-radius: var(--mcd-selected-radius);
+}
+
+/* ── Disabled days ───────────────────────────────────────────────────────── */
+.mcd-day--disabled {
+  color:        var(--mcd-disabled-text);
+  cursor:       not-allowed;
+  opacity:      var(--mcd-disabled-opacity);
+}
+
+/* ── Weekend days ────────────────────────────────────────────────────────── */
+.mcd-day--weekend {
+  color: var(--mcd-weekend-text);
+}
+.mcd-day--weekend:not(.mcd-day--today):not(.mcd-day--selected) {
+  background: var(--mcd-weekend-bg);
+}
+
+/* ── Range selection ─────────────────────────────────────────────────────── */
+.mcd-day--in-range {
+  background:    var(--mcd-range-bg);
+  color:         var(--mcd-range-text);
+  border-radius: 0;
+}
+.mcd-day--range-start { border-start-end-radius: 0; border-end-end-radius: 0; }
+.mcd-day--range-end   { border-start-start-radius: 0; border-end-start-radius: 0; }
+
+/* ── Day cell content (main + secondary) ─────────────────────────────────── */
+.mcd-day-main { display: block; line-height: 1.2; }
+.mcd-day-secondary {
+  display:    block;
+  font-size:  var(--mcd-secondary-font-size);
+  line-height: 1;
+  margin-top: 1px;
+  color:      var(--mcd-secondary-text);
+  font-weight: 400;
+}
+.mcd-day--selected .mcd-day-secondary,
+.mcd-day--range-start .mcd-day-secondary,
+.mcd-day--range-end .mcd-day-secondary {
+  color:   var(--mcd-selected-text);
+  opacity: 0.75;
+}
+
+/* ── Result preview ──────────────────────────────────────────────────────── */
+.mcd-result-preview {
+  margin-top:  var(--mcd-preview-mt);
+  font-size:   var(--mcd-preview-font-size);
+  color:       var(--mcd-preview-text);
+  background:  var(--mcd-preview-bg);
+  text-align:  center;
+  padding:     var(--mcd-preview-padding);
+  border-top:  var(--mcd-preview-border-width) solid var(--mcd-preview-border);
+}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.mcd-footer {
+  display:    flex;
+  gap:        var(--mcd-footer-gap);
+  margin-top: var(--mcd-footer-mt);
+  flex-wrap:  wrap;
+}
+
+/* ── Buttons — shared base ───────────────────────────────────────────────── */
+.mcd-btn {
+  flex:          1;
+  font-family:   var(--mcd-font);
+  font-size:     var(--mcd-btn-font-size);
+  padding:       var(--mcd-btn-padding);
+  border-radius: var(--mcd-btn-radius);
+  cursor:        pointer;
+  border:        var(--mcd-btn-border-width) solid var(--mcd-btn-border);
+  background:    var(--mcd-btn-bg);
+  color:         var(--mcd-btn-text);
+  transition:    background 0.15s, color 0.15s, opacity 0.15s;
+}
+.mcd-btn:hover {
+  background: var(--mcd-btn-hover-bg);
+  color:      var(--mcd-btn-hover-text);
+}
+
+/* ── Today button ────────────────────────────────────────────────────────── */
+.mcd-btn--today {
+  background:   var(--mcd-btn-today-bg);
+  color:        var(--mcd-btn-today-text);
+  border-color: var(--mcd-btn-today-border);
+}
+.mcd-btn--today:hover {
+  background: var(--mcd-btn-today-hover-bg);
+  opacity:    var(--mcd-btn-today-hover-opacity);
+  color:      var(--mcd-btn-today-text);
+}
+
+/* ── Clear button ────────────────────────────────────────────────────────── */
+.mcd-btn--clear {
+  background:   var(--mcd-btn-clear-bg);
+  color:        var(--mcd-btn-clear-text);
+  border-color: var(--mcd-btn-clear-border);
+}
+.mcd-btn--clear:hover {
+  background: var(--mcd-btn-clear-hover-bg);
+}
+
+/* ── Close button ────────────────────────────────────────────────────────── */
+.mcd-btn--close {
+  background:   var(--mcd-btn-close-bg);
+  color:        var(--mcd-btn-close-text);
+  border-color: var(--mcd-btn-close-border);
+}
+.mcd-btn--close:hover {
+  background: var(--mcd-btn-close-hover-bg);
+}
+
+/* ── RTL adjustments ─────────────────────────────────────────────────────── */
+[dir="rtl"] .mcd-nav--prev  { order: 2; }
+[dir="rtl"] .mcd-nav--next  { order: 0; }
+[dir="rtl"] .mcd-month-year-wrap { order: 1; }
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media (max-width: 400px) {
+  .mcd-picker { width: calc(100vw - 24px); }
+}

@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Basic Usage — Multi Calendar Datepicker</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 32px 16px;
+      max-width: 640px;
+      margin: auto;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    h1 { font-size: 1.5rem; margin: 0 0 4px; }
+    .subtitle { color: #64748b; font-size: .9rem; margin: 0 0 32px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin: 0 0 16px;
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+    label  { font-size: .85rem; font-weight: 600; color: #374151; }
+    input[type="text"] {
+      font: inherit;
+      border: 1.5px solid #d1d5db;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { outline: none; border-color: #2563eb; }
+    .result {
+      padding: 12px 16px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      font-size: .88rem;
+      color: #1d4ed8;
+      min-height: 44px;
+    }
+    .result.empty { background: #f9fafb; border-color: #e5e7eb; color: #94a3b8; }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-size: .8rem;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .kw  { color: #7dd3fc; }
+    .str { color: #86efac; }
+    .cm  { color: #64748b; }
+    .key { color: #c4b5fd; }
+
+    .step-list { list-style: none; padding: 0; margin: 0; counter-reset: steps; }
+    .step-list li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .step-list li:last-child { border-bottom: none; }
+    .step-num {
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      background: #2563eb;
+      color: #fff;
+      border-radius: 50%;
+      font-size: .78rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .step-content { flex: 1; font-size: .85rem; color: #374151; line-height: 1.6; }
+    .step-content strong { color: #1e293b; }
+    .step-content code { background: #f1f5f9; padding: 1px 6px; border-radius: 4px; font-size: .8rem; color: #6366f1; }
+
+    .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .link-btn {
+      padding: 6px 14px;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      font-size: .78rem;
+      color: #2563eb;
+      text-decoration: none;
+      background: #fff;
+      transition: background .15s;
+    }
+    .link-btn:hover { background: #eff6ff; }
+  </style>
+</head>
+<body>
+  <h1>Multi Calendar Datepicker</h1>
+  <p class="subtitle">
+    Vanilla JS · No dependencies · Gregorian, Hijri &amp; Jalali · RTL &amp; Arabic · CDN-ready
+  </p>
+
+  <!-- Quickstart -->
+  <div class="card">
+    <p class="card-title">30-Second Quickstart</p>
+    <ol class="step-list">
+      <li>
+        <span class="step-num">1</span>
+        <span class="step-content">
+          <strong>Include the CSS and JS</strong><br>
+          <code>&lt;link rel="stylesheet" href="multi-calendar-datepicker.css"&gt;</code><br>
+          <code>&lt;script src="multi-calendar-datepicker.js"&gt;&lt;/script&gt;</code>
+        </span>
+      </li>
+      <li>
+        <span class="step-num">2</span>
+        <span class="step-content">
+          <strong>Add an input element</strong><br>
+          <code>&lt;input type="text" id="mydate" readonly&gt;</code><br>
+          <code>&lt;input type="hidden" id="mydate_val" name="date"&gt;</code>
+        </span>
+      </li>
+      <li>
+        <span class="step-num">3</span>
+        <span class="step-content">
+          <strong>Initialize with one call</strong><br>
+          <code>MultiCalendarDatepicker.init('#mydate', { calendar: 'hijri', locale: 'ar', ... });</code>
+        </span>
+      </li>
+      <li>
+        <span class="step-num">4</span>
+        <span class="step-content">
+          <strong>Done — the hidden input always receives Gregorian ISO</strong><br>
+          No manual date conversion needed. <code>name="date"</code> submits <code>2026-06-15</code> to your server regardless of the displayed calendar.
+        </span>
+      </li>
+    </ol>
+  </div>
+
+  <!-- Live demo -->
+  <div class="card">
+    <p class="card-title">Live Demo — Gregorian, English</p>
+    <div class="field">
+      <label for="mydate">Select Date</label>
+      <input type="text" id="mydate" placeholder="Click to open the calendar" autocomplete="off" readonly>
+      <input type="hidden" id="mydate_val" name="date">
+    </div>
+    <div id="myres" class="result empty">No date selected yet.</div>
+  </div>
+
+  <!-- Minimal code -->
+  <div class="card">
+    <p class="card-title">Minimal Code</p>
+<pre><span class="cm">&lt;!-- 1. Load files --&gt;</span>
+&lt;link rel=<span class="str">"stylesheet"</span> href=<span class="str">"multi-calendar-datepicker.css"</span>&gt;
+&lt;script src=<span class="str">"multi-calendar-datepicker.js"</span>&gt;&lt;/script&gt;
+
+<span class="cm">&lt;!-- 2. HTML --&gt;</span>
+&lt;input type=<span class="str">"text"</span>   id=<span class="str">"mydate"</span>     readonly&gt;
+&lt;input type=<span class="str">"hidden"</span> id=<span class="str">"mydate_val"</span> name=<span class="str">"date"</span>&gt;
+
+<span class="cm">&lt;!-- 3. Init --&gt;</span>
+&lt;script&gt;
+  MultiCalendarDatepicker.init(<span class="str">'#mydate'</span>, {
+    <span class="key">calendar</span>:     <span class="str">'gregorian'</span>,  <span class="cm">// 'gregorian' | 'hijri' | 'jalali'</span>
+    <span class="key">locale</span>:       <span class="str">'en'</span>,         <span class="cm">// 'en' | 'ar'</span>
+    <span class="key">outputTarget</span>: <span class="str">'#mydate_val'</span>,<span class="cm">// hidden input gets Gregorian ISO</span>
+    <span class="key">resultTarget</span>: <span class="str">'#myres'</span>,     <span class="cm">// optional: show result text here</span>
+    <span class="key">resultTemplate</span>: <span class="str">'Selected: {{gregorian}}'</span>,
+  });
+&lt;/script&gt;</pre>
+  </div>
+
+  <!-- Navigation -->
+  <div class="card">
+    <p class="card-title">More Examples</p>
+    <div class="links">
+      <a class="link-btn" href="gregorian.html">Gregorian</a>
+      <a class="link-btn" href="arabic-hijri.html">Hijri + Ramadan</a>
+      <a class="link-btn" href="jalali.html">Jalali / Persian</a>
+      <a class="link-btn" href="min-max.html">Min / Max Dates</a>
+      <a class="link-btn" href="hidden-output.html">Hidden Output</a>
+      <a class="link-btn" href="visible-result.html">Visible Result</a>
+      <a class="link-btn" href="dark-theme.html">Dark Themes</a>
+      <a class="link-btn" href="themes.html">Theme Studio</a>
+      <a class="link-btn" href="demo.html">Full Demo</a>
+    </div>
+  </div>
+
+  <script src="../dist/multi-calendar-datepicker.js"></script>
+  <script>
+    MultiCalendarDatepicker.init('#mydate', {
+      calendar:        'gregorian',
+      locale:          'en',
+      dir:             'ltr',
+      outputTarget:    '#mydate_val',
+      resultTarget:    '#myres',
+      resultTemplate:  'Selected: {{gregorian}} ({{monthName}} {{day}}, {{year}})',
+    });
+
+    document.getElementById('mydate').addEventListener('mcd:change', function() {
+      document.getElementById('myres').classList.remove('empty');
+    });
+  </script>
+</body>
+</html>

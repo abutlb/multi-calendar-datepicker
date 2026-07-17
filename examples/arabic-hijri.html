@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>Hijri Calendar — Multi Calendar Datepicker</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 32px 16px;
+      max-width: 680px;
+      margin: auto;
+      background: #fafaf9;
+      color: #1c1917;
+    }
+    h1 { font-size: 1.4rem; margin: 0 0 4px; }
+    .subtitle { color: #78716c; font-size: .9rem; margin: 0 0 28px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #a8a29e;
+      margin: 0 0 16px;
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label  { font-size: .85rem; font-weight: 600; color: #374151; }
+    label span { font-weight: 400; color: #9ca3af; }
+    input[type="text"] {
+      font: inherit;
+      border: 1.5px solid #d6d3d1;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { outline: none; border-color: #b45309; }
+    .result {
+      margin-top: 12px;
+      padding: 12px 16px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 10px;
+      font-size: .88rem;
+      color: #92400e;
+      min-height: 44px;
+    }
+    .result.empty { background: #f9fafb; border-color: #e5e7eb; color: #94a3b8; }
+
+    pre {
+      background: #0c0a09;
+      color: #e7e5e4;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-size: .8rem;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 0;
+      direction: ltr;
+      text-align: left;
+    }
+    .kw  { color: #7dd3fc; }
+    .str { color: #86efac; }
+    .cm  { color: #57534e; }
+    .key { color: #c4b5fd; }
+    .val { color: #fbbf24; }
+
+    /* ── Ramadan section ── */
+    .ramadan-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #1a0a00 0%, #3d1a00 100%);
+      border-radius: 12px;
+      margin-bottom: 18px;
+    }
+    .ramadan-header h2 { color: #fde68a; font-size: 1.1rem; margin: 0; }
+    .ramadan-header p  { color: #d97706; font-size: .82rem; margin: 4px 0 0; }
+
+    .picker-preview-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    /* Ramadan picker — the actual theme is applied via JS */
+    #ramadan_picker_container .mcd-picker {
+      --mcd-bg:            #1a0a00;
+      --mcd-text:          #fde68a;
+      --mcd-muted:         #d97706;
+      --mcd-border:        #78350f;
+      --mcd-primary:       #f59e0b;
+      --mcd-primary-text:  #1a0a00;
+      --mcd-hover-bg:      #451a03;
+      --mcd-hover-text:    #fde68a;
+      --mcd-outside-text:  #44220a;
+      --mcd-day-text:      #fde68a;
+      --mcd-today-text:    #fde68a;
+      --mcd-weekday-text:  #d97706;
+      --mcd-nav-text:      #fde68a;
+      --mcd-select-bg:     #1c0a00;
+      --mcd-select-text:   #fde68a;
+      --mcd-select-border: #78350f;
+      --mcd-btn-bg:        #1c0a00;
+      --mcd-btn-text:      #fde68a;
+      --mcd-btn-border:    #78350f;
+      --mcd-shadow:        0 10px 40px rgba(0,0,0,.6);
+      /* ── Background image — fanoos SVG pattern ── */
+      --mcd-bg-image:         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='70' height='90' viewBox='0 0 70 90'%3E%3Cline x1='35' y1='0' x2='35' y2='10' stroke='%23d4a017' stroke-width='1.5'/%3E%3Crect x='24' y='10' width='22' height='5' rx='2.5' fill='%23d4a017'/%3E%3Cellipse cx='35' cy='20' rx='16' ry='4' fill='none' stroke='%23d4a017' stroke-width='1.5'/%3E%3Cpath d='M19,20 L13,68 L35,74 L57,68 L51,20 Z' fill='rgba(255,180,0,0.06)' stroke='%23d4a017' stroke-width='1.5'/%3E%3Cline x1='27' y1='20' x2='22' y2='74' stroke='%23d4a017' stroke-width='0.8' opacity='0.6'/%3E%3Cline x1='35' y1='20' x2='35' y2='74' stroke='%23d4a017' stroke-width='0.8' opacity='0.6'/%3E%3Cline x1='43' y1='20' x2='48' y2='74' stroke='%23d4a017' stroke-width='0.8' opacity='0.6'/%3E%3Cellipse cx='35' cy='47' rx='18' ry='5' fill='none' stroke='%23d4a017' stroke-width='1'/%3E%3Cellipse cx='35' cy='68' rx='16' ry='4' fill='none' stroke='%23d4a017' stroke-width='1.5'/%3E%3Crect x='24' y='68' width='22' height='5' rx='2.5' fill='%23d4a017'/%3E%3Cline x1='35' y1='73' x2='35' y2='83' stroke='%23d4a017' stroke-width='1.5'/%3E%3Ccircle cx='35' cy='87' r='3.5' fill='%23d4a017'/%3E%3Cellipse cx='35' cy='44' rx='8' ry='11' fill='%23ffcc00' opacity='0.18'/%3E%3C/svg%3E");
+      --mcd-bg-image-opacity: 0.22;
+      --mcd-bg-size:          80px 103px;
+      --mcd-bg-repeat:        repeat;
+      --mcd-bg-position:      center top;
+    }
+
+    .opacity-control {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .82rem;
+      color: #78716c;
+      margin-top: 12px;
+    }
+    .opacity-control input[type="range"] { flex: 1; }
+    #opacity-val { min-width: 30px; font-weight: 700; color: #b45309; }
+
+    .note {
+      font-size: .8rem;
+      color: #78716c;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 12px;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      margin-top: 14px;
+    }
+    .note-icon { flex-shrink: 0; }
+  </style>
+</head>
+<body>
+  <h1>التقويم الهجري / Hijri Calendar</h1>
+  <p class="subtitle">
+    عرض بالهجري — الحفظ بالميلادي · Display in Hijri, save Gregorian to database
+  </p>
+
+  <!-- ── Example 1: Standard Hijri ── -->
+  <div class="card">
+    <p class="card-title">مثال 1 — هجري عربي قياسي · Standard Hijri Arabic</p>
+
+    <div class="field">
+      <label for="birth_display">تاريخ الميلاد <span>/ Date of Birth</span></label>
+      <input type="text" id="birth_display" placeholder="اضغط لفتح التقويم" autocomplete="off" readonly>
+      <input type="hidden" id="birth_value" name="birth_date">
+    </div>
+    <div id="birth_result" class="result empty">لم يتم الاختيار بعد.</div>
+  </div>
+
+  <!-- ── Example 2: Ramadan background image ── -->
+  <div class="card">
+    <div class="ramadan-header">
+      <div>
+        <h2>🌙 تقويم رمضان</h2>
+        <p>مثال على إضافة خلفية صورة — فوانيس رمضانية</p>
+      </div>
+    </div>
+
+    <div class="picker-preview-wrap">
+      <div id="ramadan_picker_container">
+        <input type="text" id="ramadan_display" placeholder="اختر تاريخاً — رمضان مبارك" autocomplete="off" readonly style="border-color:#b45309">
+        <input type="hidden" id="ramadan_value" name="ramadan_date">
+      </div>
+      <div id="ramadan_result" class="result empty">لم يتم الاختيار بعد.</div>
+    </div>
+
+    <div class="opacity-control">
+      <span>شفافية الخلفية:</span>
+      <input type="range" id="opacity_slider" min="0" max="0.5" step="0.01" value="0.22">
+      <span id="opacity-val">0.22</span>
+    </div>
+
+    <div class="note">
+      <span class="note-icon">💡</span>
+      <span>
+        الخلفية مرسومة كـ SVG فوانيس في CSS. يمكن استخدام أي صورة:
+        <code style="background:#f5f5f4;padding:1px 5px;border-radius:4px;font-size:.78rem">url('images/fanoos.png')</code>
+        أو تدرجات لونية
+        <code style="background:#f5f5f4;padding:1px 5px;border-radius:4px;font-size:.78rem">linear-gradient(...)</code>.
+        المتغير <strong>--mcd-bg-image-opacity</strong> يتحكم في درجة الشفافية (0 = مخفي، 1 = كامل).
+      </span>
+    </div>
+  </div>
+
+  <!-- Code -->
+  <div class="card">
+    <p class="card-title">Code</p>
+<pre><span class="cm">/* Method 1: Via CSS on the picker element */</span>
+.my-picker .mcd-picker {
+  --mcd-bg-image:         url(<span class="str">'images/fanoos.png'</span>);
+  --mcd-bg-image-opacity: <span class="val">0.15</span>; <span class="cm">/* 0 = invisible, 1 = fully opaque */</span>
+  --mcd-bg-size:          <span class="str">cover</span>;    <span class="cm">/* cover | contain | 80px 100px */</span>
+  --mcd-bg-repeat:        <span class="str">no-repeat</span>; <span class="cm">/* no-repeat | repeat | repeat-x */</span>
+  --mcd-bg-position:      <span class="str">center</span>;   <span class="cm">/* center | top left | 50% 20% */</span>
+}
+
+<span class="cm">/* Method 2: Via a theme object */</span>
+MultiCalendarDatepicker.init(<span class="str">'#ramadan_display'</span>, {
+  <span class="key">calendar</span>: <span class="str">'hijri'</span>,
+  <span class="key">locale</span>:   <span class="str">'ar'</span>,
+  <span class="key">dir</span>:      <span class="str">'rtl'</span>,
+  <span class="key">theme</span>: {
+    <span class="key">name</span>: <span class="str">'ramadan'</span>,
+    <span class="key">vars</span>: {
+      <span class="str">'--mcd-bg'</span>:                 <span class="str">'#1a0a00'</span>,
+      <span class="str">'--mcd-text'</span>:               <span class="str">'#fde68a'</span>,
+      <span class="str">'--mcd-primary'</span>:            <span class="str">'#f59e0b'</span>,
+      <span class="str">'--mcd-bg-image'</span>:           <span class="str">"url('images/fanoos.png')"</span>,
+      <span class="str">'--mcd-bg-image-opacity'</span>:   <span class="str">'0.15'</span>,
+      <span class="str">'--mcd-bg-size'</span>:            <span class="str">'contain'</span>,
+      <span class="str">'--mcd-bg-repeat'</span>:          <span class="str">'repeat'</span>,
+      <span class="cm">// … other color vars</span>
+    },
+  },
+});</pre>
+  </div>
+
+  <!-- Standard Hijri code -->
+  <div class="card">
+    <p class="card-title">Hijri Options — خيارات الهجري</p>
+<pre>MultiCalendarDatepicker.init(<span class="str">'#birth_display'</span>, {
+  <span class="key">calendar</span>:       <span class="str">'hijri'</span>,
+  <span class="key">hijriMode</span>:      <span class="str">'tabular'</span>,  <span class="cm">// 'tabular' (default) | 'umalqura'</span>
+  <span class="key">locale</span>:         <span class="str">'ar'</span>,
+  <span class="key">dir</span>:            <span class="str">'rtl'</span>,
+  <span class="key">digits</span>:         <span class="str">'arabic'</span>,   <span class="cm">// 'arabic' (٠١٢…) | 'latin' (012…)</span>
+  <span class="key">outputTarget</span>:   <span class="str">'#birth_value'</span>,
+  <span class="key">resultTarget</span>:   <span class="str">'#birth_result'</span>,
+  <span class="key">resultTemplate</span>: <span class="str">'الميلادي لقاعدة البيانات: {{gregorian}}'</span>,
+  <span class="key">outputFormat</span>:   <span class="str">'YYYY-MM-DD'</span>,
+});</pre>
+  </div>
+
+  <script src="../dist/multi-calendar-datepicker.js"></script>
+  <script>
+    // Example 1 — Standard Hijri
+    MultiCalendarDatepicker.init('#birth_display', {
+      calendar:       'hijri',
+      hijriMode:      'tabular',
+      locale:         'ar',
+      dir:            'rtl',
+      digits:         'arabic',
+      outputTarget:   '#birth_value',
+      resultTarget:   '#birth_result',
+      resultTemplate: 'الميلادي لقاعدة البيانات: {{gregorian}} | الهجري: {{display}}',
+      outputFormat:   'YYYY-MM-DD',
+    });
+
+    document.getElementById('birth_display').addEventListener('mcd:change', function() {
+      document.getElementById('birth_result').classList.remove('empty');
+    });
+
+    // Example 2 — Ramadan theme (via CSS vars on container)
+    MultiCalendarDatepicker.init('#ramadan_display', {
+      calendar:       'hijri',
+      locale:         'ar',
+      dir:            'rtl',
+      digits:         'arabic',
+      outputTarget:   '#ramadan_value',
+      resultTarget:   '#ramadan_result',
+      resultTemplate: '🌙 {{display}} — الميلادي: {{gregorian}}',
+    });
+
+    document.getElementById('ramadan_display').addEventListener('mcd:change', function() {
+      document.getElementById('ramadan_result').classList.remove('empty');
+    });
+
+    // Opacity slider — updates --mcd-bg-image-opacity live
+    const slider = document.getElementById('opacity_slider');
+    const label  = document.getElementById('opacity-val');
+    slider.addEventListener('input', function() {
+      label.textContent = this.value;
+      // Apply to the picker element inside the container
+      const picker = document.querySelector('#ramadan_picker_container .mcd-picker');
+      if (picker) picker.style.setProperty('--mcd-bg-image-opacity', this.value);
+    });
+  </script>
+</body>
+</html>

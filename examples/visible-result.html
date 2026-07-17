@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>Visible Result Mode — Multi Calendar Datepicker</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 32px 16px;
+      max-width: 660px;
+      margin: auto;
+      background: #f0fdf4;
+      color: #14532d;
+    }
+    h1 { font-size: 1.4rem; margin: 0 0 4px; }
+    .subtitle { color: #16a34a; font-size: .9rem; margin: 0 0 28px; opacity: .8; }
+    .card {
+      background: #fff;
+      border: 1px solid #bbf7d0;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: #4ade80;
+      margin: 0 0 16px;
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label  { font-size: .85rem; font-weight: 600; color: #374151; }
+    label span { font-weight: 400; color: #9ca3af; }
+    input[type="text"] {
+      font: inherit;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { outline: none; border-color: #16a34a; }
+
+    /* Live result box */
+    .result-display {
+      margin-top: 14px;
+      padding: 16px 18px;
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      border-radius: 12px;
+      font-size: .92rem;
+      color: #15803d;
+      min-height: 56px;
+      font-weight: 500;
+    }
+    .result-display.empty { color: #94a3b8; background: #f9fafb; border-color: #e5e7eb; font-weight: 400; }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-size: .8rem;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 0;
+      direction: ltr;
+      text-align: left;
+    }
+    .kw  { color: #7dd3fc; }
+    .str { color: #86efac; }
+    .cm  { color: #64748b; }
+    .key { color: #c4b5fd; }
+    .val { color: #fbbf24; }
+
+    /* Template variable reference */
+    .vars-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 8px;
+    }
+    .var-item {
+      padding: 10px 12px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 8px;
+    }
+    .var-name { font-family: monospace; font-size: .82rem; font-weight: 700; color: #16a34a; }
+    .var-desc { font-size: .75rem; color: #6b7280; margin-top: 4px; }
+    .var-ex   { font-size: .73rem; color: #9ca3af; margin-top: 2px; }
+
+    /* Template builder */
+    .template-builder {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .tpl-btn {
+      padding: 5px 12px;
+      border: 1px solid #bbf7d0;
+      border-radius: 20px;
+      background: #f0fdf4;
+      color: #15803d;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+      font-family: monospace;
+    }
+    .tpl-btn:hover { background: #dcfce7; }
+    .tpl-btn.active { background: #16a34a; color: #fff; border-color: #16a34a; }
+
+    .tpl-preview {
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: .82rem;
+      color: #374151;
+      margin-bottom: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Visible Result Mode / وضع عرض النتيجة</h1>
+  <p class="subtitle">
+    عرض التاريخ المختار في عنصر خارج التقويم — Show the selected date in any element on the page
+  </p>
+
+  <!-- Template builder -->
+  <div class="card">
+    <p class="card-title">جرّب قوالب مختلفة · Try Different Templates</p>
+
+    <div class="template-builder" id="tpl-buttons">
+      <button class="tpl-btn active" data-tpl="الميلادي: {{gregorian}}">{{gregorian}}</button>
+      <button class="tpl-btn" data-tpl="الهجري: {{display}} | الميلادي: {{gregorian}}">full Arabic</button>
+      <button class="tpl-btn" data-tpl="{{monthName}} {{day}}, {{year}}">month name</button>
+      <button class="tpl-btn" data-tpl="اخترت: {{day}} {{monthName}} {{year}} هجرياً ({{gregorian}} م)">detailed</button>
+    </div>
+
+    <div class="tpl-preview" id="tpl-preview">الميلادي: {{gregorian}}</div>
+
+    <div class="field">
+      <label for="date_display">اختر التاريخ <span>/ Select Date</span></label>
+      <input type="text" id="date_display" placeholder="اضغط لفتح التقويم" autocomplete="off" readonly>
+      <input type="hidden" id="date_value" name="date">
+    </div>
+
+    <div id="date_result" class="result-display empty">
+      اختر تاريخاً لرؤية النتيجة — Select a date to see the result here
+    </div>
+  </div>
+
+  <!-- Code -->
+  <div class="card">
+    <p class="card-title">Code</p>
+<pre>MultiCalendarDatepicker.init(<span class="str">'#date_display'</span>, {
+  <span class="key">calendar</span>:       <span class="str">'hijri'</span>,
+  <span class="key">locale</span>:         <span class="str">'ar'</span>,
+  <span class="key">dir</span>:            <span class="str">'rtl'</span>,
+  <span class="key">outputTarget</span>:   <span class="str">'#date_value'</span>,   <span class="cm">// hidden input → Gregorian ISO</span>
+  <span class="key">resultTarget</span>:   <span class="str">'#date_result'</span>,  <span class="cm">// ← element to fill with result text</span>
+  <span class="key">resultTemplate</span>: <span class="str">'الميلادي: {{gregorian}}'</span>,
+  <span class="cm">// resultTemplate can use any combination of the variables below</span>
+});</pre>
+  </div>
+
+  <!-- Variables reference -->
+  <div class="card">
+    <p class="card-title">Template Variables — متغيرات القالب</p>
+    <div class="vars-grid">
+      <div class="var-item">
+        <div class="var-name">{{gregorian}}</div>
+        <div class="var-desc">Gregorian ISO — لقاعدة البيانات</div>
+        <div class="var-ex">e.g. 2026-06-15</div>
+      </div>
+      <div class="var-item">
+        <div class="var-name">{{display}}</div>
+        <div class="var-desc">Date in active calendar</div>
+        <div class="var-ex">e.g. 1447/12/19</div>
+      </div>
+      <div class="var-item">
+        <div class="var-name">{{year}}</div>
+        <div class="var-desc">Year (display calendar)</div>
+        <div class="var-ex">e.g. 1447</div>
+      </div>
+      <div class="var-item">
+        <div class="var-name">{{month}}</div>
+        <div class="var-desc">Month number</div>
+        <div class="var-ex">e.g. 12</div>
+      </div>
+      <div class="var-item">
+        <div class="var-name">{{day}}</div>
+        <div class="var-desc">Day number</div>
+        <div class="var-ex">e.g. 19</div>
+      </div>
+      <div class="var-item">
+        <div class="var-name">{{monthName}}</div>
+        <div class="var-desc">Full month name (localized)</div>
+        <div class="var-ex">e.g. ذو الحجة / December</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../dist/multi-calendar-datepicker.js"></script>
+  <script>
+    var currentTemplate = 'الميلادي: {{gregorian}}';
+    var picker;
+
+    function initPicker(template) {
+      if (picker) picker.destroy();
+      document.getElementById('date_display').value = '';
+      document.getElementById('date_value').value   = '';
+      document.getElementById('date_result').textContent = 'اختر تاريخاً لرؤية النتيجة — Select a date to see the result here';
+      document.getElementById('date_result').classList.add('empty');
+
+      picker = MultiCalendarDatepicker.init('#date_display', {
+        calendar:       'hijri',
+        locale:         'ar',
+        dir:            'rtl',
+        outputTarget:   '#date_value',
+        resultTarget:   '#date_result',
+        resultTemplate: template,
+      });
+
+      document.getElementById('date_display').addEventListener('mcd:change', function() {
+        document.getElementById('date_result').classList.remove('empty');
+      });
+    }
+
+    // Template switcher
+    document.getElementById('tpl-buttons').addEventListener('click', function(e) {
+      var btn = e.target.closest('.tpl-btn');
+      if (!btn) return;
+
+      document.querySelectorAll('.tpl-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+
+      currentTemplate = btn.dataset.tpl;
+      document.getElementById('tpl-preview').textContent = currentTemplate;
+      initPicker(currentTemplate);
+    });
+
+    initPicker(currentTemplate);
+  </script>
+</body>
+</html>

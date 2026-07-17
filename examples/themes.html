@@ -1,0 +1,606 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MCD — Theme Studio</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+      min-height: 100vh;
+    }
+
+    /* ── Page header ──────────────────────────────────────── */
+    .page-header {
+      background: #111827;
+      color: #f9fafb;
+      padding: 28px 32px 24px;
+    }
+    .page-header h1 { font-size: 1.5rem; font-weight: 700; }
+    .page-header p  { color: #9ca3af; margin-top: 4px; font-size: .9rem; }
+
+    /* ── Layout ───────────────────────────────────────────── */
+    .layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 84px);
+    }
+    @media (max-width: 700px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { border-left: none; border-bottom: 1px solid #e5e7eb; }
+    }
+
+    /* ── Sidebar — theme list ─────────────────────────────── */
+    .sidebar {
+      background: #fff;
+      border-left: 1px solid #e5e7eb;
+      padding: 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sidebar h2 { font-size: .8rem; color: #6b7280; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+
+    .theme-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      cursor: pointer;
+      text-align: start;
+      transition: background .12s, border-color .12s;
+      font: inherit;
+      font-size: .85rem;
+    }
+    .theme-btn:hover { background: #f9fafb; }
+    .theme-btn.active { border-color: #2563eb; background: #eff6ff; color: #1d4ed8; }
+
+    .theme-swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 2px solid rgba(0,0,0,.08);
+    }
+    .theme-btn .theme-label { flex: 1; }
+    .theme-btn .theme-desc  { font-size: .72rem; color: #9ca3af; display: block; margin-top: 1px; }
+
+    /* ── Main area ────────────────────────────────────────── */
+    .main {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .card h3 { font-size: 1rem; margin-bottom: 16px; }
+
+    /* ── Live preview ─────────────────────────────────────── */
+    .preview-area {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    .picker-frame {
+      flex-shrink: 0;
+    }
+
+    .preview-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 200px;
+    }
+
+    .info-row { font-size: .85rem; }
+    .info-row strong { color: #6b7280; display: block; font-size: .75rem; margin-bottom: 2px; }
+    .info-row span { font-weight: 600; }
+
+    /* ── Export section ───────────────────────────────────── */
+    .export-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .tab-btn {
+      font: inherit;
+      font-size: .8rem;
+      padding: 5px 14px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      cursor: pointer;
+      transition: background .1s;
+    }
+    .tab-btn.active { background: #111827; color: #f9fafb; border-color: #111827; }
+
+    .export-code {
+      position: relative;
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 16px;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      font-size: .75rem;
+      line-height: 1.6;
+      color: #e2e8f0;
+      overflow: auto;
+      max-height: 280px;
+      white-space: pre;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font: inherit;
+      font-size: .75rem;
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      background: #1e293b;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: background .1s, color .1s;
+    }
+    .copy-btn:hover { background: #334155; color: #f1f5f9; }
+    .copy-btn.copied { background: #059669; color: #fff; border-color: #059669; }
+
+    /* ── Custom theme builder ─────────────────────────────── */
+    .builder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+    }
+    .color-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .color-field label { font-size: .75rem; color: #6b7280; font-weight: 600; }
+    .color-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 4px 8px;
+      background: #fff;
+    }
+    input[type="color"] {
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+      border-radius: 4px;
+    }
+    .color-hex {
+      font-size: .8rem;
+      font-family: monospace;
+      border: none;
+      background: none;
+      width: 72px;
+      color: #374151;
+    }
+    .color-hex:focus { outline: none; }
+
+    .builder-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font: inherit;
+      font-size: .85rem;
+      padding: 8px 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .btn:hover { opacity: .88; }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-secondary { background: #f3f4f6; color: #111827; border: 1px solid #e5e7eb; }
+    .btn-green   { background: #059669; color: #fff; }
+
+    /* ── All themes preview ───────────────────────────────── */
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .theme-card {
+      border: 2px solid transparent;
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color .15s, transform .1s;
+    }
+    .theme-card:hover { border-color: #2563eb; transform: translateY(-1px); }
+    .theme-card.active { border-color: #2563eb; }
+    .theme-card-header {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .85rem;
+      font-weight: 600;
+    }
+    .theme-card-body {
+      padding: 10px 14px 14px;
+      font-size: .75rem;
+    }
+    /* Mini picker preview inside card */
+    .mini-picker {
+      border-radius: 8px;
+      padding: 8px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .mini-day {
+      text-align: center;
+      font-size: .65rem;
+      border-radius: 4px;
+      padding: 3px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+  <h1>MCD Theme Studio</h1>
+  <p>جرّب الثيمات الجاهزة، وابنِ ثيمك الخاص، وانسخ الكود لمشاركته مع المطورين.</p>
+</header>
+
+<div class="layout">
+
+  <!-- ── Sidebar: theme list ── -->
+  <aside class="sidebar">
+    <h2>الثيمات المتاحة</h2>
+    <div id="theme-list"></div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- Live preview -->
+    <div class="card">
+      <h3>معاينة مباشرة — <span id="active-theme-name">Light</span></h3>
+      <div class="preview-area">
+        <div class="picker-frame" id="picker-demo-wrap">
+          <input type="text" id="picker-demo" placeholder="اضغط لفتح التقويم"
+                 style="font:inherit;border:1px solid #d1d5db;border-radius:10px;padding:10px 12px;width:220px;" readonly autocomplete="off">
+        </div>
+        <div class="preview-info">
+          <div class="info-row"><strong>Display</strong><span id="pv-display">—</span></div>
+          <div class="info-row"><strong>Gregorian DB</strong><span id="pv-greg">—</span></div>
+          <div class="info-row"><strong>Theme ID</strong><span id="pv-theme">light</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="card">
+      <h3>تصدير الثيم — مشاركة مع المطورين</h3>
+      <div class="export-tabs">
+        <button class="tab-btn active" data-tab="js">JavaScript</button>
+        <button class="tab-btn" data-tab="css">CSS</button>
+      </div>
+      <div style="position:relative">
+        <pre class="export-code" id="export-code"></pre>
+        <button class="copy-btn" id="copy-btn">نسخ</button>
+      </div>
+    </div>
+
+    <!-- Custom builder -->
+    <div class="card">
+      <h3>بنّاء الثيم المخصص</h3>
+      <p style="font-size:.85rem;color:#6b7280;margin-bottom:16px">غيّر الألوان الأساسية وطبّق على المعاينة فوراً.</p>
+      <div class="builder-grid" id="builder-fields"></div>
+      <div class="builder-actions">
+        <button class="btn btn-primary" id="apply-custom">تطبيق</button>
+        <button class="btn btn-green"  id="export-custom">تصدير كـ JS</button>
+        <button class="btn btn-secondary" id="reset-custom">إعادة تعيين</button>
+      </div>
+    </div>
+
+    <!-- All themes at a glance -->
+    <div class="card">
+      <h3>كل الثيمات دفعة واحدة</h3>
+      <div class="themes-grid" id="all-themes-grid"></div>
+    </div>
+
+  </main>
+</div>
+
+<script src="../dist/multi-calendar-datepicker.js"></script>
+<script>
+const MCD = window.MultiCalendarDatepicker;
+
+// ── State ────────────────────────────────────────────────────────────────────
+let currentThemeId = 'light';
+let currentTab = 'js';
+let picker = null;
+
+// ── Init picker ──────────────────────────────────────────────────────────────
+function initPicker(themeId) {
+  if (picker) picker.destroy();
+  picker = new MCD.Datepicker('#picker-demo', {
+    calendar: 'hijri',
+    locale: 'ar',
+    dir: 'rtl',
+    theme: themeId,
+    showResult: true,
+    showTodayButton: true,
+    showClearButton: true,
+  });
+  document.getElementById('picker-demo').addEventListener('mcd:change', function(e) {
+    document.getElementById('pv-display').textContent = e.detail.displayValue || '—';
+    document.getElementById('pv-greg').textContent    = e.detail.value        || '—';
+  });
+}
+
+// ── Build sidebar ─────────────────────────────────────────────────────────────
+function buildSidebar() {
+  const container = document.getElementById('theme-list');
+  const themes = MCD.themes.getAll();
+
+  // Swatch colors
+  const swatchColors = {
+    light:    '#2563eb', dark:    '#3b82f6', midnight: '#6366f1',
+    ocean:    '#22d3ee', warm:    '#b45309', rose:     '#e11d48',
+    emerald:  '#059669', amber:   '#d97706', violet:   '#7c3aed',
+    teal:     '#0d9488',
+  };
+
+  themes.forEach(function(t) {
+    const btn = document.createElement('button');
+    btn.className = 'theme-btn' + (t.id === currentThemeId ? ' active' : '');
+    btn.dataset.id = t.id;
+    btn.innerHTML =
+      '<span class="theme-swatch" style="background:' + (swatchColors[t.id] || '#888') + '"></span>' +
+      '<span class="theme-label">' +
+        '<span>' + t.name + '</span>' +
+        '<span class="theme-desc">' + t.description + '</span>' +
+      '</span>';
+    btn.addEventListener('click', function() { activateTheme(t.id); });
+    container.appendChild(btn);
+  });
+}
+
+function activateTheme(id) {
+  currentThemeId = id;
+  const theme = MCD.themes.get(id);
+
+  // Update sidebar
+  document.querySelectorAll('.theme-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.id === id);
+  });
+  // Update all-themes grid
+  document.querySelectorAll('.theme-card').forEach(function(c) {
+    c.classList.toggle('active', c.dataset.id === id);
+  });
+
+  document.getElementById('active-theme-name').textContent = theme ? theme.name : id;
+  document.getElementById('pv-theme').textContent = id;
+
+  picker.setTheme(id);
+  updateExport();
+}
+
+// ── Export ───────────────────────────────────────────────────────────────────
+function updateExport() {
+  const code = currentTab === 'js'
+    ? MCD.themes.exportJS(currentThemeId)
+    : MCD.themes.exportCSS(currentThemeId);
+  document.getElementById('export-code').textContent = code;
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    currentTab = btn.dataset.tab;
+    updateExport();
+  });
+});
+
+document.getElementById('copy-btn').addEventListener('click', function() {
+  const text = document.getElementById('export-code').textContent;
+  navigator.clipboard.writeText(text).then(function() {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'تم النسخ ✓';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      btn.textContent = 'نسخ';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+});
+
+// ── Custom builder ────────────────────────────────────────────────────────────
+const builderVars = [
+  { label: 'الخلفية',          key: '--mcd-bg',           default: '#ffffff' },
+  { label: 'النص',             key: '--mcd-text',         default: '#111827' },
+  { label: 'النص الثانوي',     key: '--mcd-muted',        default: '#6b7280' },
+  { label: 'الحدود',           key: '--mcd-border',       default: '#e5e7eb' },
+  { label: 'اللون الأساسي',    key: '--mcd-primary',      default: '#2563eb' },
+  { label: 'نص اللون الأساسي', key: '--mcd-primary-text', default: '#ffffff' },
+  { label: 'خلفية التمرير',    key: '--mcd-hover-bg',     default: '#eff6ff' },
+  { label: 'نص التمرير',       key: '--mcd-hover-text',   default: '#2563eb' },
+  { label: 'الأيام الخارجية',  key: '--mcd-outside-text', default: '#d1d5db' },
+  { label: 'الظل',             key: '--mcd-shadow',       default: null },
+  { label: 'نصف القطر',        key: '--mcd-radius',       default: null },
+];
+
+function buildFields() {
+  const grid = document.getElementById('builder-fields');
+  builderVars.forEach(function(v) {
+    if (!v.default) return; // skip non-color fields for now
+    const field = document.createElement('div');
+    field.className = 'color-field';
+    field.innerHTML =
+      '<label>' + v.label + '</label>' +
+      '<div class="color-row">' +
+        '<input type="color" id="f_' + v.key.replace(/--/g,'').replace(/-/g,'_') + '" value="' + v.default + '">' +
+        '<input type="text" class="color-hex" value="' + v.default + '">' +
+      '</div>';
+    const colorIn = field.querySelector('input[type="color"]');
+    const hexIn   = field.querySelector('.color-hex');
+    colorIn.addEventListener('input', function() { hexIn.value = colorIn.value; });
+    hexIn.addEventListener('change', function() {
+      if (/^#[0-9a-fA-F]{6}$/.test(hexIn.value)) colorIn.value = hexIn.value;
+    });
+    field.dataset.key = v.key;
+    grid.appendChild(field);
+  });
+}
+
+function getCustomVars() {
+  const vars = {};
+  document.querySelectorAll('#builder-fields .color-field').forEach(function(f) {
+    const color = f.querySelector('input[type="color"]').value;
+    vars[f.dataset.key] = color;
+  });
+  // Derive related vars automatically
+  vars['--mcd-today-ring']       = vars['--mcd-primary'];
+  vars['--mcd-selected-bg']      = vars['--mcd-primary'];
+  vars['--mcd-selected-text']    = vars['--mcd-primary-text'];
+  vars['--mcd-day-focus-ring']   = vars['--mcd-primary'];
+  vars['--mcd-day-hover-bg']     = vars['--mcd-hover-bg'];
+  vars['--mcd-day-hover-text']   = vars['--mcd-hover-text'];
+  vars['--mcd-nav-hover-bg']     = vars['--mcd-hover-bg'];
+  vars['--mcd-nav-hover-text']   = vars['--mcd-hover-text'];
+  vars['--mcd-btn-today-bg']     = vars['--mcd-primary'];
+  vars['--mcd-btn-today-text']   = vars['--mcd-primary-text'];
+  vars['--mcd-btn-today-border'] = vars['--mcd-primary'];
+  vars['--mcd-select-bg']        = vars['--mcd-bg'];
+  vars['--mcd-select-text']      = vars['--mcd-text'];
+  vars['--mcd-select-border']    = vars['--mcd-border'];
+  vars['--mcd-btn-bg']           = vars['--mcd-bg'];
+  vars['--mcd-btn-text']         = vars['--mcd-text'];
+  vars['--mcd-btn-border']       = vars['--mcd-border'];
+  vars['--mcd-btn-hover-bg']     = vars['--mcd-hover-bg'];
+  vars['--mcd-btn-hover-text']   = vars['--mcd-hover-text'];
+  return vars;
+}
+
+document.getElementById('apply-custom').addEventListener('click', function() {
+  const vars = getCustomVars();
+  picker.setTheme({ vars: vars });
+  currentThemeId = '_custom';
+  document.getElementById('active-theme-name').textContent = 'مخصص';
+  document.getElementById('pv-theme').textContent = 'custom';
+});
+
+document.getElementById('export-custom').addEventListener('click', function() {
+  const vars = getCustomVars();
+  const lines = Object.entries(vars).map(function(e) {
+    return "    '" + e[0] + "': '" + e[1] + "'";
+  }).join(',\n');
+  const js = "MultiCalendarDatepicker.themes.register('my-theme', {\n  name: 'My Theme',\n  description: 'Custom theme',\n  vars: {\n" + lines + "\n  }\n});";
+  document.getElementById('export-code').textContent = js;
+  // switch to JS tab
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelector('[data-tab="js"]').classList.add('active');
+});
+
+document.getElementById('reset-custom').addEventListener('click', function() {
+  activateTheme('light');
+  // Reset field values
+  document.querySelectorAll('#builder-fields .color-field').forEach(function(f) {
+    const def = builderVars.find(function(v) { return v.key === f.dataset.key; });
+    if (def) {
+      f.querySelector('input[type="color"]').value = def.default;
+      f.querySelector('.color-hex').value = def.default;
+    }
+  });
+});
+
+// ── All themes grid ───────────────────────────────────────────────────────────
+function buildAllThemesGrid() {
+  const grid = document.getElementById('all-themes-grid');
+  const themes = MCD.themes.getAll();
+
+  const bgColors = {
+    light:'#fff',dark:'#111827',midnight:'#0f172a',ocean:'#0c4a6e',warm:'#fffbf0',
+    rose:'#fff',emerald:'#fff',amber:'#fff',violet:'#fff',teal:'#fff'
+  };
+  const textColors = {
+    light:'#111827',dark:'#f9fafb',midnight:'#e2e8f0',ocean:'#e0f2fe',warm:'#1c1917',
+    rose:'#111827',emerald:'#111827',amber:'#111827',violet:'#111827',teal:'#111827'
+  };
+  const primaryColors = {
+    light:'#2563eb',dark:'#3b82f6',midnight:'#6366f1',ocean:'#22d3ee',warm:'#b45309',
+    rose:'#e11d48',emerald:'#059669',amber:'#d97706',violet:'#7c3aed',teal:'#0d9488'
+  };
+
+  themes.forEach(function(t) {
+    const bg      = bgColors[t.id]      || '#fff';
+    const text    = textColors[t.id]    || '#111';
+    const primary = primaryColors[t.id] || '#2563eb';
+
+    const card = document.createElement('div');
+    card.className = 'theme-card' + (t.id === currentThemeId ? ' active' : '');
+    card.dataset.id = t.id;
+    card.style.background = bg;
+    card.style.border = '2px solid ' + (t.id === currentThemeId ? primary : 'transparent');
+
+    // Mini days preview
+    const days = ['', '1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21'];
+    const miniCells = days.map(function(d, i) {
+      if (!d) return '<div class="mini-day" style="color:' + text + ';opacity:.3">-</div>';
+      const isSel = d === '15';
+      const isToday = d === '10';
+      let style = 'color:' + (isSel ? '#fff' : text) + ';background:' + (isSel ? primary : 'transparent') + ';';
+      if (isToday) style += 'box-shadow:inset 0 0 0 1px ' + primary + ';font-weight:700;';
+      return '<div class="mini-day" style="' + style + '">' + d + '</div>';
+    }).join('');
+
+    card.innerHTML =
+      '<div class="theme-card-header" style="background:' + primary + ';color:#fff">' +
+        '<span style="width:16px;height:16px;border-radius:50%;background:#fff;opacity:.3;flex-shrink:0"></span>' +
+        '<span>' + t.name + '</span>' +
+      '</div>' +
+      '<div class="theme-card-body">' +
+        '<div class="mini-picker" style="background:' + bg + ';border-radius:8px;border:1px solid rgba(0,0,0,.08)">' +
+          miniCells +
+        '</div>' +
+        '<p style="margin-top:8px;font-size:.72rem;color:' + text + ';opacity:.6">' + t.description + '</p>' +
+      '</div>';
+
+    card.addEventListener('click', function() { activateTheme(t.id); });
+    grid.appendChild(card);
+  });
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+buildSidebar();
+buildFields();
+buildAllThemesGrid();
+initPicker(currentThemeId);
+updateExport();
+</script>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>Hidden Output Mode — Multi Calendar Datepicker</title>
+  <link rel="stylesheet" href="../dist/multi-calendar-datepicker.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 32px 16px;
+      max-width: 660px;
+      margin: auto;
+      background: #f8fafc;
+      color: #1e293b;
+    }
+    h1 { font-size: 1.4rem; margin: 0 0 4px; }
+    .subtitle { color: #64748b; font-size: .9rem; margin: 0 0 28px; }
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      margin: 0 0 16px;
+    }
+
+    /* ── Flow diagram ── */
+    .flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      flex: 1;
+      min-width: 120px;
+      padding: 14px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: .8rem;
+    }
+    .step-user  { background: #dbeafe; color: #1d4ed8; }
+    .step-input { background: #dcfce7; color: #15803d; }
+    .step-hidden{ background: #fef9c3; color: #854d0e; }
+    .step-db    { background: #f3e8ff; color: #6d28d9; }
+    .flow-arrow { color: #94a3b8; font-size: 1.4rem; padding: 0 4px; flex-shrink: 0; }
+    .step-label { font-weight: 700; font-size: .85rem; margin-bottom: 4px; }
+    .step-sub   { font-size: .72rem; opacity: .75; }
+    @media (max-width: 520px) {
+      .flow { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); }
+    }
+
+    /* ── Form ── */
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    label  { font-size: .85rem; font-weight: 600; color: #374151; }
+    label span { font-weight: 400; color: #9ca3af; }
+    input[type="text"] {
+      font: inherit;
+      border: 1.5px solid #d1d5db;
+      border-radius: 10px;
+      padding: 10px 14px;
+      width: 100%;
+      transition: border-color .15s;
+    }
+    input[type="text"]:focus { outline: none; border-color: #2563eb; }
+
+    .values-display {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    @media (max-width: 400px) { .values-display { grid-template-columns: 1fr; } }
+    .val-box {
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid;
+    }
+    .val-box.display-val { background: #dcfce7; border-color: #86efac; }
+    .val-box.hidden-val  { background: #fef9c3; border-color: #fde047; }
+    .val-box-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+    .val-box.display-val .val-box-label { color: #15803d; }
+    .val-box.hidden-val  .val-box-label { color: #854d0e; }
+    .val-box-value { font-family: monospace; font-size: .88rem; color: #1e293b; font-weight: 600; }
+
+    pre {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-size: .8rem;
+      overflow-x: auto;
+      line-height: 1.7;
+      margin: 0;
+    }
+    .kw  { color: #7dd3fc; }
+    .str { color: #86efac; }
+    .cm  { color: #64748b; }
+    .key { color: #c4b5fd; }
+    .val-c { color: #fbbf24; }
+
+    .notice {
+      font-size: .8rem;
+      color: #64748b;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hidden Output Mode / وضع الإخراج المخفي</h1>
+  <p class="subtitle">
+    Show Hijri to users, send Gregorian ISO to the server — عرض هجري للمستخدم، حفظ ميلادي للسيرفر
+  </p>
+
+  <!-- Diagram -->
+  <div class="card">
+    <p class="card-title">How It Works — كيف يعمل</p>
+    <div class="flow">
+      <div class="flow-step step-user">
+        <div class="step-label">👤 User</div>
+        <div class="step-sub">Sees Hijri calendar<br>يرى تقويم هجري</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step step-input">
+        <div class="step-label">📅 input[text]</div>
+        <div class="step-sub">Shows Hijri date<br>يعرض التاريخ الهجري</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step step-hidden">
+        <div class="step-label">🔒 input[hidden]</div>
+        <div class="step-sub">Stores Gregorian<br>يحفظ الميلادي</div>
+      </div>
+      <span class="flow-arrow">→</span>
+      <div class="flow-step step-db">
+        <div class="step-label">🗄️ Database</div>
+        <div class="step-sub">Receives ISO date<br>يستقبل YYYY-MM-DD</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Demo -->
+  <div class="card">
+    <p class="card-title">Live Demo</p>
+    <div class="field">
+      <label for="hdate">
+        تاريخ الميلاد <span>/ Date of Birth</span>
+        <span style="margin-inline-start:8px;font-size:.75rem;background:#dbeafe;color:#1d4ed8;padding:2px 8px;border-radius:10px">Hijri display</span>
+      </label>
+      <input type="text" id="hdate" placeholder="اضغط لفتح التقويم" autocomplete="off" readonly>
+      <input type="hidden" id="hdate_val" name="birth_date">
+    </div>
+
+    <div class="values-display">
+      <div class="val-box display-val">
+        <div class="val-box-label">📅 What user sees (input[text])</div>
+        <div class="val-box-value" id="show-display">—</div>
+      </div>
+      <div class="val-box hidden-val">
+        <div class="val-box-label">🔒 What DB receives (input[hidden])</div>
+        <div class="val-box-value" id="show-hidden">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Code -->
+  <div class="card">
+    <p class="card-title">Code</p>
+<pre>MultiCalendarDatepicker.init(<span class="str">'#hdate'</span>, {
+  <span class="key">calendar</span>:     <span class="str">'hijri'</span>,   <span class="cm">// displayed calendar</span>
+  <span class="key">locale</span>:       <span class="str">'ar'</span>,
+  <span class="key">dir</span>:          <span class="str">'rtl'</span>,
+  <span class="key">outputTarget</span>: <span class="str">'#hdate_val'</span>,  <span class="cm">// ← the hidden input</span>
+  <span class="cm">// No resultTarget = no result div shown</span>
+});
+
+<span class="cm">// Read the hidden value on change:</span>
+document.getElementById(<span class="str">'hdate'</span>).addEventListener(<span class="str">'mcd:change'</span>, <span class="kw">function</span>(e) {
+  console.log(e.detail.gregorian); <span class="cm">// '2026-06-15' — always Gregorian ISO</span>
+  console.log(e.detail.display);   <span class="cm">// '1447/12/19' — Hijri display value</span>
+});</pre>
+  </div>
+
+  <!-- Event detail explained -->
+  <div class="card">
+    <p class="card-title">Event Detail — تفاصيل الحدث mcd:change</p>
+<pre>e.detail = {
+  <span class="key">gregorian</span>:  <span class="str">'2026-06-15'</span>,    <span class="cm">// ISO — always Gregorian, always present</span>
+  <span class="key">display</span>:    <span class="str">'1447/12/19'</span>,    <span class="cm">// date in the active calendar system</span>
+  <span class="key">year</span>:       <span class="val-c">1447</span>,            <span class="cm">// year in display calendar</span>
+  <span class="key">month</span>:      <span class="val-c">12</span>,
+  <span class="key">day</span>:        <span class="val-c">19</span>,
+  <span class="key">monthName</span>:  <span class="str">'ذو الحجة'</span>,       <span class="cm">// localized month name</span>
+  <span class="key">calendar</span>:   <span class="str">'hijri'</span>,          <span class="cm">// active calendar ID</span>
+}</pre>
+  </div>
+
+  <script src="../dist/multi-calendar-datepicker.js"></script>
+  <script>
+    MultiCalendarDatepicker.init('#hdate', {
+      calendar:     'hijri',
+      locale:       'ar',
+      dir:          'rtl',
+      outputTarget: '#hdate_val',
+    });
+
+    document.getElementById('hdate').addEventListener('mcd:change', function(e) {
+      document.getElementById('show-display').textContent = document.getElementById('hdate').value;
+      document.getElementById('show-hidden').textContent  = document.getElementById('hdate_val').value;
+    });
+  </script>
+</body>
+</html>
