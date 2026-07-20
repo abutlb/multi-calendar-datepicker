@@ -1,10 +1,13 @@
 # Multi Calendar Datepicker
 
+[![npm version](https://img.shields.io/npm/v/multi-calendar-datepicker.svg)](https://www.npmjs.com/package/multi-calendar-datepicker)
 [![CI](https://github.com/abutlb/multi-calendar-datepicker/actions/workflows/ci.yml/badge.svg)](https://github.com/abutlb/multi-calendar-datepicker/actions/workflows/ci.yml)
 ![gzip size](https://img.shields.io/badge/gzip-~12%20kB-brightgreen)
 ![dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![types](https://img.shields.io/badge/types-included-blue)
 ![license](https://img.shields.io/badge/license-MIT-blue)
+
+**[▶ Live demo](https://abutlb.github.io/multi-calendar-datepicker/)** · **[npm](https://www.npmjs.com/package/multi-calendar-datepicker)** · **[GitHub](https://github.com/abutlb/multi-calendar-datepicker)**
 
 Lightweight, dependency-free datepicker supporting **Gregorian** (with Levantine month names), **Hijri (official Umm al-Qura)**, **Jalali (Persian)**, and **Coptic** calendars — with range selection, dual-calendar display, RTL, and full CSS-variable theming.
 
@@ -24,10 +27,8 @@ Lightweight, dependency-free datepicker supporting **Gregorian** (with Levantine
 
 ## Install / التثبيت
 
-```html
-<!-- CDN / plain script -->
-<link rel="stylesheet" href="dist/multi-calendar-datepicker.css">
-<script src="dist/multi-calendar-datepicker.js"></script>
+```bash
+npm install multi-calendar-datepicker
 ```
 
 ```js
@@ -35,6 +36,16 @@ Lightweight, dependency-free datepicker supporting **Gregorian** (with Levantine
 import MCD, { Datepicker } from 'multi-calendar-datepicker';
 import 'multi-calendar-datepicker/css';
 ```
+
+```html
+<!-- CDN — no install needed -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/multi-calendar-datepicker@1/dist/multi-calendar-datepicker.css">
+<script src="https://cdn.jsdelivr.net/npm/multi-calendar-datepicker@1/dist/multi-calendar-datepicker.js"></script>
+```
+
+`@1` pins the major version so a future release can't silently break your page — swap in an exact version (e.g. `@1.1.0`) for full stability, or drop it to always track latest.
+
+<sub>Also mirrored on [unpkg](https://unpkg.com/multi-calendar-datepicker/dist/multi-calendar-datepicker.js).</sub>
 
 ## Quick start / البداية السريعة
 
